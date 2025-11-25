@@ -2,7 +2,7 @@ import pandas as pd
 from difflib import get_close_matches
 
 # Load Excel file
-file_path = r"C:\Users\Administrator\Desktop\AU\Chatbot\faculty_data.xlsx"
+file_path = "data/faculty_data.xlsx" #r"C:\Users\Administrator\Desktop\AU\Chatbot\faculty_data.xlsx"
 xls = pd.ExcelFile(file_path)
 
 sheet_name = next((s for s in xls.sheet_names if "faculty" in s.lower()), None)

@@ -597,7 +597,7 @@ from typing import List, Dict
 # ==============================
 # CONFIG
 # ==============================
-FILE_PATH = r"C:\Users\Administrator\Desktop\AU\Chatbot\student_contacts.xlsx"
+FILE_PATH ="data/student_contacts.xlsx"  #r"C:\Users\Administrator\Desktop\AU\Chatbot\student_contacts.xlsx"
 FUZZY_CUTOFF = 0.7
 MAX_FUZZY_MATCHES = 6
 

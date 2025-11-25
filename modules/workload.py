@@ -130,7 +130,7 @@ import pandas as pd
 import re
 from datetime import datetime, time
 
-FILE_PATH = r"C:\Users\Administrator\Desktop\AU\Chatbot\workload.xlsx"
+FILE_PATH = "data/workload.xlsx" #r"C:\Users\Administrator\Desktop\AU\Chatbot\workload.xlsx"
 
 HOURS = ["H1", "H2", "H3", "H4", "Lunch", "H5", "H6", "H7", "H8"]
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
