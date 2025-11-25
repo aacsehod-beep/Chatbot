@@ -761,7 +761,7 @@ def fuzzy_in(text: str, candidate: str, threshold=0.75) -> bool:
 
 
 # ----------------- Load Excel -----------------
-FILE_PATH = r"C:\Users\Administrator\Desktop\AU\Chatbot\timetable.xlsx"
+FILE_PATH = "data/timetable.xlsx" #r"C:\Users\Administrator\Desktop\AU\Chatbot\timetable.xlsx"
 xls = pd.ExcelFile(FILE_PATH)
 
 timetables = {}
