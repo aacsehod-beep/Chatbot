@@ -693,13 +693,13 @@ upcoming class-2A
 free slots cse-2a
 free periods for cse-2a on monday
 break time friday cse-2a
-
+ravikanth aiml-2b
 ==============================
 🔹 Teacher Search
 when does mamatha jain teach?
 classes handled by ramesh
 mamatha monday
-
+swetha sree classes for cse-2b
 ==============================
 🔹 Subject Search
 when is chemistry for cse-2a?

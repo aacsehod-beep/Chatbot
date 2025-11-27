@@ -717,37 +717,35 @@ bharath parent no
 parent contact of naveen  
 
 =============================
-🔹 Email
-email of varsha  
+🔹 Email  
+
 priya mail id  
+mail -get all mails
 
 =============================
 🔹 Reg.No Search
 21A11A05G2  
 241U1R1001  
-05G2 (partial reg)  
+241U1R1 (partial reg)  
 
 =============================
 🔹 Phone Reverse Lookup
 9876543210  
-search 3210  
+9876543 (partial search) 
 
 =============================
 🔹 Section-wise Listing
 cse-2a list  
-students in aiml-2b  
-show ece 1a  
 
 =============================
 🔹 Name + Section Filter
 kushal cse-2a  
 priya aiml 1b  
-bharath ece1a  
 
 =============================
 🔹 Full Info
 info about bharath  
-details of priya  
+vivek  --get full information  
 
 ✨ Natural language queries supported.
 """
