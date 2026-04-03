@@ -233,8 +233,8 @@ def gui_get_attendance(query):
 
 # --------------------------- Example: preload weeks ---------------------------
 week_files = {
-    # "week1": r"C:\Users\Administrator\Desktop\AU\Chatbot\week1.xlsx",
-    # "week2": r"C:\Users\Administrator\Desktop\AU\Chatbot\week2.xlsx"
+    "week1": r"C:\Users\Administrator\Desktop\AU\Chatbot\week1.xlsx",
+     "week2": r"C:\Users\Administrator\Desktop\AU\Chatbot\week2.xlsx"
 }
 
 for week, path in week_files.items():

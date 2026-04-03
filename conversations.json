@@ -1,0 +1,838 @@
+{
+  "f980ed33": {
+    "messages": [
+      {
+        "user": "Hello",
+        "bot": "<b>Student Info:</b><br>\u274c No student 'hello'.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:11:37.025342"
+      },
+      {
+        "user": "shashank",
+        "bot": "<b>Student Info:</b><br>\ud83d\udc64 Name: Bayasani Shashank Reddy<br>\ud83c\udff7\ufe0f Reg.No: 241U1R1025<br>\ud83c\udfeb Section: CSE-2A<br>\ud83d\udcf1 Student Contact: 7569630270.0<br>\ud83d\udcde Parent Contact: 9866476537<br>\u2709\ufe0f Email: shashankreddy.bayasani@aurora.edu.in",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:11:47.663473"
+      },
+      {
+        "user": "shashank phone",
+        "bot": "<b>Student Info:</b><br>\u274c No student 'shashank phone'.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:11:53.995708"
+      },
+      {
+        "user": "can you tell me about ravikanth",
+        "bot": "<b>Faculty Info:</b><br>\u274c No faculty found for 'can you tell me about ravikanth'.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T01:12:12.158914"
+      },
+      {
+        "user": "ravikanth",
+        "bot": "<b>Faculty Info:</b><br>Name: Mr.K. Ravikanth<br>Designation: Asst.Prof., CSE, SoE<br>DOJ: 16.09.2023<br>Department: School of Engineering<br>Phone No: 9247448766<br>CUG No: 9100000112.0<br>Official Mail: ravikanth@aurora.edu.in<br>Personal Mail: ravikanth27787@gmail.com<br>-----------------------------",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T01:12:15.649500"
+      }
+    ],
+    "created_at": "2026-04-02T01:11:36.761495",
+    "title": "New Conversation"
+  },
+  "910328cd": {
+    "messages": [],
+    "created_at": "2026-04-02T01:12:35.344281",
+    "title": "New Conversation"
+  },
+  "955fe7b6": {
+    "messages": [
+      {
+        "user": "hello",
+        "bot": "<b>Student Info:</b><br>\u274c No student 'hello'.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:21:49.473442"
+      },
+      {
+        "user": "hello",
+        "bot": "<b>Student Info:</b><br>\u274c No student 'hello'.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:21:54.912142"
+      },
+      {
+        "user": "i want know about rahul",
+        "bot": "<b>Student Info:</b><br>\u274c No student 'i want know about rahul'.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:22:52.769963"
+      },
+      {
+        "user": "i want know about kushal",
+        "bot": "<b>Student Info:</b><br>\u274c No student 'i want know about kushal'.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:23:02.525006"
+      },
+      {
+        "user": "kushal",
+        "bot": "<b>Student Info:</b><br>\ud83d\udc64 Name: Y.Kushal Goud<br>\ud83c\udff7\ufe0f Reg.No: 241U1R1001<br>\ud83c\udfeb Section: CSE-2A<br>\ud83d\udcf1 Student Contact: nan<br>\ud83d\udcde Parent Contact: 7093424411<br>\u2709\ufe0f Email: kushalgoud.yadagiri@aurora.edu.in",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:23:05.112933"
+      },
+      {
+        "user": "hello",
+        "bot": "<b>Student Info:</b><br>\u274c No student 'hello'.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T01:29:15.537630"
+      }
+    ],
+    "created_at": "2026-04-02T01:21:46.862216",
+    "title": "New Conversation"
+  },
+  "86b3508f": {
+    "messages": [
+      {
+        "user": "wjwjw",
+        "bot": "<b>AI Assistant:</b><br>I searched for wjwjw but found no matching record. Please check the spelling or try using the exact full name.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:13:39.949782"
+      },
+      {
+        "user": "hello",
+        "bot": "<b>AI Assistant:</b><br>Hello! I am AuroMate, your university assistant. <br><br>How can I help you with your timetable today? <br>You can type 'timetable help' to see how to use this feature.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:13:48.864661"
+      },
+      {
+        "user": "can you today timetable",
+        "bot": "<b>AI Assistant:</b><br>To provide your timetable, please specify your section. <br><br>For example, you can type: 'CSE-2A timetable'.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:14:04.804047"
+      },
+      {
+        "user": "cse-2a",
+        "bot": "<b>AI Assistant:</b><br>I searched for cse-2a but found no matching record. Please check the spelling or try using the exact full name.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:14:25.703099"
+      },
+      {
+        "user": "CSE-2A",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>I searched for cse-2a but found no matching record. Please check the spelling or try using the exact full name.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:14:35.217524"
+      },
+      {
+        "user": "cse-2a time table",
+        "bot": "<b>AI Assistant:</b><br>I searched for cse-2a but found no matching record. Please check the spelling or try using the exact full name.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:14:53.543634"
+      },
+      {
+        "user": "cse-2b",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>I searched for cse-2b but found no matching record. Please check the spelling or try using the exact full name.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:15:01.811816"
+      },
+      {
+        "user": "help me with commonds",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br><br>You can use the following formats for timetable queries:<br><br>- **Section Timetable:** \"CSE-2A timetable\" or \"Schedule CSE2A\"<br>- **Day Timetable:** \"CSE-2A Monday\" or \"2a Friday classes\"<br>- **Hour-wise:** \"cse2a H4 Thursday\"<br>- **Class Incharge:** \"Who is class incharge for cse2a?\"<br>- **Next Class:** \"next class for cse2a\"<br>- **Free Slot Finder:** \"free slots cse-2a\"<br>- **Teacher Search:** \"when does mamatha jain teach?\"<br>- **Subject Search:** \"when is chemistry for cse-2a?\"<br><br>Feel free to ask naturally, for example: \"What is cse2a 2nd hour on Friday?\"",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:15:19.405146"
+      },
+      {
+        "user": "CSE-2A timetable",
+        "bot": "<b>AI Assistant:</b><br>**Timetable for CSE2A:**<br><br>**Monday:**<br>H1-H2: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H3-H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H5-H6: The English Explorers Club<br>H7: French - Mr. Suresh<br>H8: Digital Electronics(T) - Ms.Nuzhath farhana<br><br>**Tuesday:**<br>H1-H2: Digital Electronics(T) - Ms.Nuzhath farhana<br>H3: Database Management Systems(SL) - Dr.G. Krishna kumari<br>H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H5: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H6: Free slot<br>H7-H8: Theory of Computation(T) - Dr.S.Mahesh<br><br>**Wednesday:**<br>H1-H2: Research and Publication Ethics - Dr.T.Swetha<br>H3-H4: Probability and Statistics(P) - Dr.M. Varalaxmi<br>H5: Theory of Computation(T) - Dr.S.Mahesh<br>H6-H7: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H8: Digital Electronics(SL) - Ms.Nuzhath farhana<br><br>**Thursday:**<br>H1-H2: Theory of Computation(P) - Dr.S.Mahesh<br>H3-H4: Digital Electronics(Lab) - Ms.Nuzhath farhana<br>H5: Probability and Statistics(SL) - Dr.M. Varalaxmi<br>H6: Free<br>H7-H8: Talent Enrichment<br><br>**Friday:**<br>H1: Theory of Computation(SL) - Dr.S.Mahesh<br>H2: Free slot<br>H3-H4: French - Mr. Suresh<br>H5-H6: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:15:36.124534"
+      },
+      {
+        "user": "can you give cse-2a  friday timetable",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>**Friday Timetable for CSE-2A:**<br><br>H1: Theory of Computation (SL) - Dr.S.Mahesh<br>H2: Free slot<br>H3-H4: French - Mr. Suresh<br>H0: LUNCH BREAK<br>H5-H6: Database Management Systems (Lab) - Dr.G. Krishna kumari<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:16:04.902076"
+      }
+    ],
+    "created_at": "2026-04-02T02:13:38.065128",
+    "title": "New Conversation"
+  },
+  "5b7ba4de": {
+    "messages": [
+      {
+        "user": "can you today timetable for cse-2a",
+        "bot": "<b>AI Assistant:</b><br>Here is the timetable for CSE-2A:<br><br>--- Monday ---<br>H1-H2: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H3-H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H0: LUNCH BREAK<br>H5-H6: The English Explorers Club<br>H7: French - Mr. Suresh<br>H8: Digital Electronics(T) - Ms.Nuzhath farhana<br><br>--- Tuesday ---<br>H1-H2: Digital Electronics(T) - Ms.Nuzhath farhana<br>H3: Database Management Systems(SL) - Dr.G. Krishna kumari<br>H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H0: LUNCH BREAK<br>H5: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H6: Free slot<br>H7-H8: Theory of Computation (T) - Dr.S.Mahesh<br><br>--- Wednesday ---<br>H1-H2: Research and Publication Ethics - Dr.T.Swetha<br>H3-H4: Probability and Statistics(P) - Dr.M. Varalaxmi<br>H0: LUNCH BREAK<br>H5: Theory of Computation (T) - Dr.S.Mahesh<br>H6-H7: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H8: Digital Electronics(SL) - Ms.Nuzhath farhana<br><br>--- Thursday ---<br>H1-H2: Theory of Computation (P) - Dr.S.Mahesh<br>H3-H4: Digital Electronics(Lab) - Ms.Nuzhath farhana<br>H0: LUNCH BREAK<br>H5: Probability and Statistics(SL) - Dr.M. Varalaxmi<br>H6: Free<br>H7-H8: Talent Enrichment<br><br>--- Friday ---<br>H1: Theory of Computation (SL) - Dr.S.Mahesh<br>H2: Free slot<br>H3-H4: French - Mr. Suresh<br>H0: LUNCH BREAK<br>H5-H6: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:17:23.540661"
+      },
+      {
+        "user": "can you provide kushal parent no",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'kushal' but found no matching record. Please check the spelling or try using the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:18:41.917085"
+      },
+      {
+        "user": "can you tell about Kushal",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>Here is the information for Y.Kushal Goud:<br><br>**Name:** Y.Kushal Goud<br>**Reg.No:** 241U1R1001<br>**Section:** CSE-2A<br>**Student Contact:** nan<br>**Parent Contact:** 7093424411<br>**Email:** kushalgoud.yadagiri@aurora.edu.in",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:18:58.740235"
+      },
+      {
+        "user": "kushal parent nomber i want",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>The parent contact number for Y.Kushal Goud is: 7093424411.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:19:12.698541"
+      }
+    ],
+    "created_at": "2026-04-02T02:17:01.923538",
+    "title": "New Conversation"
+  },
+  "3e7a485a": {
+    "messages": [],
+    "created_at": "2026-04-02T02:26:30.786497",
+    "title": "New Conversation"
+  },
+  "727bc460": {
+    "messages": [
+      {
+        "user": "niku telugu vacha",
+        "bot": "<b>AI Assistant:</b><br>I searched for niku telugu vacha but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:28:08.316853"
+      },
+      {
+        "user": "naku kushal kavali",
+        "bot": "<b>AI Assistant:</b><br>I searched for naku kushal kavali but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:28:29.074440"
+      },
+      {
+        "user": "Search student name",
+        "bot": "<b>AI Assistant:</b><br>I searched for search student name but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:28:38.011373"
+      },
+      {
+        "user": "List all student sections",
+        "bot": "<b>AI Assistant:</b><br>The available student sections are:<br>AIML-3A, AIML-3B, AIML-2C, AIML-2B, AIML-2A<br>CSE-3C, CSE-3B, CSE-3A, CSE-2C, CSE-2B, CSE-2A<br>DS-3A, DS-2A",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:28:43.971951"
+      },
+      {
+        "user": "aiml 3a",
+        "bot": "<b>AI Assistant:</b><br>I searched for aiml 3a but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:28:51.442855"
+      },
+      {
+        "user": "List all student sections",
+        "bot": "<b>AI Assistant:</b><br>The available student sections are:<br>AIML-3A, AIML-3B, AIML-2C, AIML-2B, AIML-2A<br>CSE-3C, CSE-3B, CSE-3A, CSE-2C, CSE-2B, CSE-2A<br>DS-3A, DS-2A",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:28:59.923593"
+      },
+      {
+        "user": "Who is the class representative?",
+        "bot": "<b>AI Assistant:</b><br>I do not have that in current university records.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:29:14.703013"
+      },
+      {
+        "user": "List all student sections",
+        "bot": "<b>AI Assistant:</b><br>I searched for list all student sections but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:29:21.089455"
+      },
+      {
+        "user": "What are the available sections?",
+        "bot": "<b>AI Assistant:</b><br>I searched for what are the available sections? but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:29:26.990408"
+      },
+      {
+        "user": "What are the student sections?",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>Please include the word 'attendance' in your query to access the section data.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:31:16.380530"
+      },
+      {
+        "user": "Check attendance for CSE-2A",
+        "bot": "<b>AI Assistant:</b><br>I searched for Check attendance for CSE-2A but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:31:22.164091"
+      },
+      {
+        "user": "kushal attendance week 1",
+        "bot": "<b>AI Assistant:</b><br>I searched for kushal attendance week 1 but found no matching record. <br>Please provide both the student name and their specific section to retrieve the attendance details.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:31:53.458335"
+      },
+      {
+        "user": "kushal cse-2a attendance week 1",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>Yadagiri Kushal Goud (241U1R1001) attendance for Week 1:<br>Data not recorded for this period.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:32:08.490209"
+      },
+      {
+        "user": "cse-2a timetable",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>I searched for cse-2a timetable but found no matching record. <br>I do not have that in current university records.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:32:26.542717"
+      },
+      {
+        "user": "i want cse-2a timetable",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>I searched for cse-2a timetable but found no matching record. <br>I do not have that in current university records.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:32:45.995594"
+      },
+      {
+        "user": "Is there a class schedule available?",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>I do not have that in current university records.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:32:57.741175"
+      },
+      {
+        "user": "CSE 2 year time table",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>I searched for CSE 2 year time table but found no matching record. <br>I do not have that in current university records.",
+        "feature": "Attendance",
+        "timestamp": "2026-04-02T02:34:02.450556"
+      },
+      {
+        "user": "cse- 2a timetable",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>Here is the timetable for CSE-2A:<br><br>--- Monday ---<br>H1-H2: Probability and Statistics (T) - Dr.M. Varalaxmi<br>H3-H4: Database Management Systems (T) - Dr.G. Krishna kumari<br>H5-H6: The English Explorers Club<br>H7: French - Mr. Suresh<br>H8: Digital Electronics (T) - Ms.Nuzhath farhana<br><br>--- Tuesday ---<br>H1-H2: Digital Electronics (T) - Ms.Nuzhath farhana<br>H3: Database Management Systems (SL) - Dr.G. Krishna kumari<br>H4: Database Management Systems (T) - Dr.G. Krishna kumari<br>H5: Probability and Statistics (T) - Dr.M. Varalaxmi<br>H6: Free slot<br>H7-H8: Theory of Computation (T) - Dr.S.Mahesh<br><br>--- Wednesday ---<br>H1-H2: Research and Publication Ethics - Dr.T.Swetha<br>H3-H4: Probability and Statistics (P) - Dr.M. Varalaxmi<br>H5: Theory of Computation (T) - Dr.S.Mahesh<br>H6-H7: Database Management Systems (Lab) - Dr.G. Krishna kumari<br>H8: Digital Electronics (SL) - Ms.Nuzhath farhana<br><br>--- Thursday ---<br>H1-H2: Theory of Computation (P) - Dr.S.Mahesh<br>H3-H4: Digital Electronics (Lab) - Ms.Nuzhath farhana<br>H5: Probability and Statistics (SL) - Dr.M. Varalaxmi<br>H6: Free<br>H7-H8: Talent Enrichment<br><br>--- Friday ---<br>H1: Theory of Computation (SL) - Dr.S.Mahesh<br>H2: Free slot<br>H3-H4: French - Mr. Suresh<br>H5-H6: Database Management Systems (Lab) - Dr.G. Krishna kumari<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:34:22.021121"
+      },
+      {
+        "user": "Who teaches Digital Electronics?",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>Digital Electronics is taught by Ms. Nuzhath Farhana.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:34:30.216002"
+      },
+      {
+        "user": "When is the next class?",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>\u26a0\ufe0f Please specify which section for next class.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:34:42.208361"
+      },
+      {
+        "user": "What is CSE-2A schedule?",
+        "bot": "<b>AI Assistant:</b><br>Here is the timetable for CSE-2A:<br><br>--- Monday ---<br>H1-H2: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H3-H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H5-H6: The English Explorers Club<br>H7: French - Mr. Suresh<br>H8: Digital Electronics(T) - Ms.Nuzhath farhana<br><br>--- Tuesday ---<br>H1-H2: Digital Electronics(T) - Ms.Nuzhath farhana<br>H3: Database Management Systems(SL) - Dr.G. Krishna kumari<br>H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H5: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H6: Free slot<br>H7-H8: Theory of Computation(T) - Dr.S.Mahesh<br><br>--- Wednesday ---<br>H1-H2: Research and Publication Ethics - Dr.T.Swetha<br>H3-H4: Probability and Statistics(P) - Dr.M. Varalaxmi<br>H5: Theory of Computation(T) - Dr.S.Mahesh<br>H6-H7: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H8: Digital Electronics(SL) - Ms.Nuzhath farhana<br><br>--- Thursday ---<br>H1-H2: Theory of Computation(P) - Dr.S.Mahesh<br>H3-H4: Digital Electronics(Lab) - Ms.Nuzhath farhana<br>H5: Probability and Statistics(SL) - Dr.M. Varalaxmi<br>H6: Free<br>H7-H8: Talent Enrichment<br><br>--- Friday ---<br>H1: Theory of Computation(SL) - Dr.S.Mahesh<br>H2: Free slot<br>H3-H4: French - Mr. Suresh<br>H5-H6: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:34:49.158637"
+      },
+      {
+        "user": "When is the French class?",
+        "bot": "<b>AI Assistant:</b><br>I searched for when is the french class? but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:35:01.691047"
+      },
+      {
+        "user": "Who teaches French?",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br><br>French is taught by the following faculty members based on current records:<br><br>- Mr. Suresh<br>- Ms. K. Vasavi<br>- Mrs. Vasavi",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:35:10.994507"
+      }
+    ],
+    "created_at": "2026-04-02T02:27:43.501485",
+    "title": "New Conversation"
+  },
+  "d3eb4bf4": {
+    "messages": [
+      {
+        "user": "hello",
+        "bot": "<b>AI Assistant:</b><br>I searched for hello but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:35:30.267551"
+      },
+      {
+        "user": "cse-2a timetable",
+        "bot": "<b>AI Assistant:</b><br>Here is the timetable for CSE-2A:<br><br>**Monday**<br>H1-H2: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H3-H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H5-H6: The English Explorers Club<br>H7: French - Mr. Suresh<br>H8: Digital Electronics(T) - Ms.Nuzhath farhana<br><br>**Tuesday**<br>H1-H2: Digital Electronics(T) - Ms.Nuzhath farhana<br>H3: Database Management Systems(SL) - Dr.G. Krishna kumari<br>H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H5: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H6: Free slot<br>H7-H8: Theory of Computation (T) - Dr.S.Mahesh<br><br>**Wednesday**<br>H1-H2: Research and Publication Ethics - Dr.T.Swetha<br>H3-H4: Probability and Statistics(P) - Dr.M. Varalaxmi<br>H5: Theory of Computation (T) - Dr.S.Mahesh<br>H6-H7: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H8: Digital Electronics(SL) - Ms.Nuzhath farhana<br><br>**Thursday**<br>H1-H2: Theory of Computation (P) - Dr.S.Mahesh<br>H3-H4: Digital Electronics(Lab) - Ms.Nuzhath farhana<br>H5: Probability and Statistics(SL) - Dr.M. Varalaxmi<br>H6: Free<br>H7-H8: Talent Enrichment<br><br>**Friday**<br>H1: Theory of Computation (SL) - Dr.S.Mahesh<br>H2: Free slot<br>H3-H4: French - Mr. Suresh<br>H5-H6: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:35:46.555447"
+      }
+    ],
+    "created_at": "2026-04-02T02:35:21.741075",
+    "title": "New Conversation"
+  },
+  "b01a8b13": {
+    "messages": [
+      {
+        "user": "hello",
+        "bot": "<b>AI Assistant:</b><br>I searched for hello but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:37:16.604066"
+      },
+      {
+        "user": "good morning",
+        "bot": "<b>AI Assistant:</b><br>I searched for good morning but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:37:21.633684"
+      },
+      {
+        "user": "What is my class schedule?",
+        "bot": "<b>AI Assistant:</b><br>Please specify your section to view your schedule. For example, you can ask for 'CSE-2A timetable'.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:37:36.269382"
+      },
+      {
+        "user": "What is the CSE-2A timetable?",
+        "bot": "<b>AI Assistant:</b><br>Here is the timetable for CSE-2A:<br><br>**Monday**<br>H1-H2: Probability and Statistics (T) - Dr. M. Varalaxmi<br>H3-H4: Database Management Systems (T) - Dr. G. Krishna Kumari<br>H0: LUNCH BREAK<br>H5-H6: The English Explorers Club<br>H7: French - Mr. Suresh<br>H8: Digital Electronics (T) - Ms. Nuzhath Farhana<br><br>**Tuesday**<br>H1-H2: Digital Electronics (T) - Ms. Nuzhath Farhana<br>H3: Database Management Systems (SL) - Dr. G. Krishna Kumari<br>H4: Database Management Systems (T) - Dr. G. Krishna Kumari<br>H0: LUNCH BREAK<br>H5: Probability and Statistics (T) - Dr. M. Varalaxmi<br>H6: Free slot<br>H7-H8: Theory of Computation (T) - Dr. S. Mahesh<br><br>**Wednesday**<br>H1-H2: Research and Publication Ethics - Dr. T. Swetha<br>H3-H4: Probability and Statistics (P) - Dr. M. Varalaxmi<br>H0: LUNCH BREAK<br>H5: Theory of Computation (T) - Dr. S. Mahesh<br>H6-H7: Database Management Systems (Lab) - Dr. G. Krishna Kumari<br>H8: Digital Electronics (SL) - Ms. Nuzhath Farhana<br><br>**Thursday**<br>H1-H2: Theory of Computation (P) - Dr. S. Mahesh<br>H3-H4: Digital Electronics (Lab) - Ms. Nuzhath Farhana<br>H0: LUNCH BREAK<br>H5: Probability and Statistics (SL) - Dr. M. Varalaxmi<br>H6: Free<br>H7-H8: Talent Enrichment<br><br>**Friday**<br>H1: Theory of Computation (SL) - Dr. S. Mahesh<br>H2: Free slot<br>H3-H4: French - Mr. Suresh<br>H0: LUNCH BREAK<br>H5-H6: Database Management Systems (Lab) - Dr. G. Krishna Kumari<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:37:43.563692"
+      },
+      {
+        "user": "Are there any free slots?",
+        "bot": "<b>AI Assistant:</b><br>I searched for Are there any free slots? but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Workload",
+        "timestamp": "2026-04-02T02:37:53.565132"
+      },
+      {
+        "user": "Show free slots for Tuesday",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>Based on the CSE-2A schedule, the free slot on Tuesday is:<br><br>H6: Free slot",
+        "feature": "Workload",
+        "timestamp": "2026-04-02T02:38:04.240270"
+      },
+      {
+        "user": "naku em thelidu",
+        "bot": "<b>AI Assistant:</b><br>I searched for naku em thelidu but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:38:24.436489"
+      },
+      {
+        "user": "telugu",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>I searched for telugu but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:38:31.674417"
+      },
+      {
+        "user": "Show me free slots.",
+        "bot": "<b>AI Assistant:</b><br>I searched for Show me free slots. but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Workload",
+        "timestamp": "2026-04-02T02:42:33.527154"
+      },
+      {
+        "user": "Show free slots for Tuesday",
+        "bot": "<b>AI Assistant:</b><br>I searched for Show me free slots. but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Workload",
+        "timestamp": "2026-04-02T02:42:44.827691"
+      },
+      {
+        "user": "Show free slots for Monday",
+        "bot": "<b>AI Assistant:</b><br>I searched for Show free slots for Monday but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Workload",
+        "timestamp": "2026-04-02T02:42:51.605386"
+      },
+      {
+        "user": "Is there class on Monday?",
+        "bot": "<b>AI Assistant:</b><br>I searched for Is there class on Monday? but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:42:59.341404"
+      },
+      {
+        "user": "Show CSE-2A timetable",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>Here is the timetable for CSE-2A:<br><br>--- Monday ---<br>H1-H2: Probability and Statistics(T) - Dr.M. Varalaxmi<br>H3-H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H5-H6: The English Explorers Club<br>H7: French - Mr. Suresh<br>H8: Digital Electronics(T) - Ms.Nuzhath farhana<br><br>--- Tuesday ---<br>H1-H2: Digital Electronics(T) - Ms.Nuzhath farhana<br>H3: Database Management Systems(SL) - Dr.G. Krishna kumari<br>H4: Database Management Systems(T) - Dr.G. Krishna kumari<br>H5: Probability and Statistics(T)- Dr.M. Varalaxmi<br>H6: Free slot<br>H7-H8: Theory of Computation (T) - Dr.S.Mahesh<br><br>--- Wednesday ---<br>H1-H2: Research and Publication Ethics - Dr.T.Swetha<br>H3-H4: Probability and Statistics(P)- Dr.M. Varalaxmi<br>H5: Theory of Computation (T) - Dr.S.Mahesh<br>H6-H7: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H8: Digital Electronics(SL) - Ms.Nuzhath farhana<br><br>--- Thursday ---<br>H1-H2: Theory of Computation (P) - Dr.S.Mahesh<br>H3-H4: Digital Electronics(Lab) - Ms.Nuzhath farhana<br>H5: Probability and Statistics(SL)- Dr.M. Varalaxmi<br>H6: Free<br>H7-H8: Talent Enrichment<br><br>--- Friday ---<br>H1: Theory of Computation (SL) - Dr.S.Mahesh<br>H2: Free slot<br>H3-H4: French - Mr. Suresh<br>H5-H6: Database Management Systems(Lab) - Dr.G. Krishna kumari<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:43:06.140456"
+      },
+      {
+        "user": "Who teaches Digital Electronics?",
+        "bot": "<b>AI Assistant:</b><br>Digital Electronics is taught by Ms. Nuzhath Farhana.",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:43:14.336370"
+      },
+      {
+        "user": "Who teaches Theory of Computation?",
+        "bot": "<b>AI Assistant:</b><br>Theory of Computation is taught by:<br><br>CSE-2A: Dr. S. Mahesh<br>CSE-2B: Dr. K. Chandra shekar<br>CSE-2C: Dr. K. Chandra shekar",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:43:19.260462"
+      },
+      {
+        "user": "Who teaches Database Management Systems?",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>Database Management Systems is taught by:<br><br>CSE-2A: Dr. G. Krishna kumari<br>CSE-2B: Dr. B. Pannalal<br>CSE-2C: Dr. V. Manisharma",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:43:27.017319"
+      },
+      {
+        "user": "Who teaches Probability and Statistics?",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>Probability and Statistics is taught by:<br><br>CSE-2A: Dr. M. Varalaxmi<br>CSE-2B: Ms. G. Swetha Sree<br>CSE-2C: Ms. G. Swetha Sree",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:43:34.407601"
+      },
+      {
+        "user": "When is Probability and Statistics held?",
+        "bot": "<b>AI Assistant:</b><br>I searched for \"When is Probability and Statistics held?\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:43:43.730718"
+      },
+      {
+        "user": "When is Probability and Statistics held for cse-2a",
+        "bot": "<b>AI Assistant:</b><br>Probability and Statistics for CSE-2A is held on:<br><br>Monday: H1-H2<br>Tuesday: H5<br>Wednesday: H3-H4<br>Thursday: H5",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:44:08.799070"
+      },
+      {
+        "user": "Is there a lab on Wednesday?",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>\u26a0\ufe0f Which section? e.g., 'CSE-2A timetable'",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:44:48.060467"
+      },
+      {
+        "user": "Is there a lab for CSE-2B?",
+        "bot": "<b>AI Assistant:</b><br>I searched for \"Is there a lab for CSE-2B?\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:45:00.805896"
+      },
+      {
+        "user": "CSE-2B classes",
+        "bot": "<b>AI Assistant:</b><br>I searched for \"CSE-2B classes\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:45:09.394742"
+      },
+      {
+        "user": "CSE-2B timetable",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>Here is the timetable for CSE-2B:<br><br>**Monday**<br>H1: Digital Electronics (T) - Ms.Nuzhath farhana<br>H3-H4: Theory of Computation (T) - Dr.K..Chandra shekar<br>H5-H6: German - Mr. Abdul<br>H7-H8: Probability and Statistics(T) - Ms.G.Swetha Sree<br><br>**Tuesday**<br>H1: Probability and Statistics(T) - Ms.G.Swetha Sree<br>H2-H3: Database Management Systems(T) - Dr.B.Pannalal<br>H4: German - Mr. Abdul<br>H5-H6: The English Explorers Club<br>H7-H8: Digital Electronics (T) - Ms.Nuzhath farhana<br><br>**Wednesday**<br>H1-H2: Digital Electronics (Lab) - Ms.Nuzhath farhana<br>H3: Theory of Computation (T) - Dr.K..Chandra shekar<br>H5-H6: Database Management Systems(T/SL) - Dr.B.Pannalal<br>H7-H8: Research and Publication Ethics - Dr.Rajeev Srivastav<br><br>**Thursday**<br>H1: Theory of Computation (SL) - Dr.K..Chandra shekar<br>H2-H3: Probability and Statistics(P) - Ms.G.Swetha Sree<br>H5-H6: Database Management Systems(Lab) - Dr.B.Pannalal<br>H7-H8: Talent Enrichment<br><br>**Friday**<br>H1-H2: Theory of Computation (P) - Dr.K..Chandra shekar<br>H3-H4: Database Management Systems(Lab) - Dr.B.Pannalal<br>H5: Probability and Statistics(SL) - Ms.G.Swetha Sree<br>H6: Digital Electronics (SL) - Ms.Nuzhath farhana<br>H7-H8: Department Club Activity",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T02:45:18.567848"
+      },
+      {
+        "user": "cse-2b facultys",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>The following faculty members are associated with CSE-2B:<br><br>- Digital Electronics: Ms. Nuzhath Farhana<br>- Theory of Computation: Dr. K. Chandrasekar<br>- German: Mr. Abdul<br>- Probability and Statistics: Ms. G. Swetha Sree<br>- Database Management Systems: Dr. B. Pannalal<br>- Research and Publication Ethics: Dr. Rajeev Srivastav",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T02:45:31.722954"
+      },
+      {
+        "user": "kuhsal registration number",
+        "bot": "<b>AI Assistant:</b><br>I searched for \"kuhsal registration number\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:48:20.080982"
+      },
+      {
+        "user": "i want kushal registration number",
+        "bot": "<b>AI Assistant:</b><br>I searched for \"i want kushal registration number\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:48:36.810913"
+      },
+      {
+        "user": "Search student by name",
+        "bot": "<b>AI Assistant:</b><br>I searched for \"search student by name\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:48:41.514838"
+      },
+      {
+        "user": "kushal",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>Here is the student information for Y.Kushal Goud:<br><br>Name: Y.Kushal Goud<br>Registration Number: 241U1R1001<br>Section: CSE-2A<br>Parent Contact: 7093424411<br>Email: kushalgoud.yadagiri@aurora.edu.in",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:48:48.909643"
+      },
+      {
+        "user": "i want his registration number of kushal",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>I searched for \"i want his registration number of kushal\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:49:13.434183"
+      },
+      {
+        "user": "kushal registration number",
+        "bot": "<b>AI Assistant:</b><br>I searched for \"kushal registration number\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:49:28.437636"
+      },
+      {
+        "user": "What is Kushal's registration number?",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'what is kushal's registration number?' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:49:37.139221"
+      },
+      {
+        "user": "Show me Y.Kushal Goud's details",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>Here are the details for Y.Kushal Goud:<br><br>Name: Y.Kushal Goud<br>Registration Number: 241U1R1001<br>Section: CSE-2A<br>Parent Contact: 7093424411<br>Email: kushalgoud.yadagiri@aurora.edu.in",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:49:42.887842"
+      },
+      {
+        "user": "What is Kushal's section?",
+        "bot": "<b>AI Assistant:</b><br>Y.Kushal Goud belongs to section CSE-2A.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:49:48.308973"
+      },
+      {
+        "user": "What is his registration number?",
+        "bot": "<b>AI Assistant:</b><br>I searched for \"what is his registration number?\" but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:49:53.198257"
+      },
+      {
+        "user": "Contact information for Kushal",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'contact information for kushal' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:50:01.023696"
+      },
+      {
+        "user": "What is his parent contact?",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'what is his parent contact?' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:50:11.034563"
+      },
+      {
+        "user": "Provide Y.Kushal Goud's email",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>The email address for Y.Kushal Goud is:<br>kushalgoud.yadagiri@aurora.edu.in",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:50:16.620944"
+      },
+      {
+        "user": "What is his registration number?",
+        "bot": "<b>AI Assistant:</b><br>**AI Assistant:**<br>Y.Kushal Goud's registration number is 241U1R1001.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:50:33.453717"
+      }
+    ],
+    "created_at": "2026-04-02T02:37:04.337940",
+    "title": "New Conversation"
+  },
+  "3762cf4d": {
+    "messages": [],
+    "created_at": "2026-04-02T02:50:44.658422",
+    "title": "New Conversation"
+  },
+  "06684e6a": {
+    "messages": [],
+    "created_at": "2026-04-02T02:50:51.618722",
+    "title": "New Conversation"
+  },
+  "89bcf01b": {
+    "messages": [],
+    "created_at": "2026-04-02T02:50:52.820498",
+    "title": "New Conversation"
+  },
+  "25f194ba": {
+    "messages": [],
+    "created_at": "2026-04-02T02:51:22.176496",
+    "title": "New Conversation"
+  },
+  "f88ae48d": {
+    "messages": [
+      {
+        "user": "hello",
+        "bot": "<b>AI Assistant:</b><br>I searched for hello but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:52:28.773869"
+      },
+      {
+        "user": "hello",
+        "bot": "<b>AI Assistant:</b><br>I searched for hello but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:52:32.894295"
+      }
+    ],
+    "created_at": "2026-04-02T02:51:23.127266",
+    "title": "New Conversation"
+  },
+  "68493c4e": {
+    "messages": [],
+    "created_at": "2026-04-02T02:54:01.328949",
+    "title": "New Conversation"
+  },
+  "d53659a6": {
+    "messages": [],
+    "created_at": "2026-04-02T02:57:54.967379",
+    "title": "New Conversation"
+  },
+  "f39cffed": {
+    "messages": [],
+    "created_at": "2026-04-02T02:58:08.161293",
+    "title": "New Conversation"
+  },
+  "0c0a29b0": {
+    "messages": [
+      {
+        "user": "hello",
+        "bot": "<b>AI Assistant:</b><br>I searched for hello but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T02:58:18.834629"
+      },
+      {
+        "user": "What is my schedule?",
+        "bot": "<b>AI Assistant:</b><br>To provide your schedule, please specify your section (e.g., 'CSE-2A timetable').",
+        "feature": "Timetable",
+        "timestamp": "2026-04-02T03:02:44.227118"
+      }
+    ],
+    "created_at": "2026-04-02T02:58:08.972675",
+    "title": "New Conversation"
+  },
+  "ba2a37f3": {
+    "messages": [
+      {
+        "user": "hello",
+        "bot": "<b>AI Assistant:</b><br>I searched for hello but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:04:11.751482"
+      },
+      {
+        "user": "i want kushal detials cse-2a",
+        "bot": "<b>AI Assistant:</b><br>I searched for kushal detials in CSE-2A but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:04:28.040035"
+      },
+      {
+        "user": "Show CSE-2A student list",
+        "bot": "<b>AI Assistant:</b><br>I searched for show but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:04:35.819450"
+      },
+      {
+        "user": "Who is in CSE-2A?",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>The following students are in section CSE-2A:<br><br>- Gundu Srinithya (241U1R1009)<br>- Ginnaiah Sai Charan (241U1R1012)<br>- Kondakindi Pavanteja Reddy (241U1R1015)<br>- Chintala Rakesh Reddy (241U1R1026)<br>- Kadapala Sainath Reddy (241U1R1030)",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:04:41.429032"
+      },
+      {
+        "user": "Email for Kadapala Sainath Reddy",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>The email for Kadapala Sainath Reddy is:<br>sainathreddy.kadapala@aurora.edu.in",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:04:52.236598"
+      },
+      {
+        "user": "What is his student ID?",
+        "bot": "<b>AI Assistant:</b><br>I searched for what is his student id? but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:05:00.942596"
+      },
+      {
+        "user": "What is Kadapala Sainath Reddy's ID?",
+        "bot": "<b>AI Assistant:</b><br><b>AI Assistant:</b><br>The student ID for Kadapala Sainath Reddy is:<br>241U1R1030",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:05:06.376936"
+      },
+      {
+        "user": "Get parent contact details",
+        "bot": "<b>AI Assistant:</b><br>I do not have that in current university records.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:05:10.582028"
+      },
+      {
+        "user": "What is his student email?",
+        "bot": "<b>AI Assistant:</b><br>I searched for his student ? but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:05:19.485400"
+      },
+      {
+        "user": "What is his email?",
+        "bot": "<b>AI Assistant:</b><br>I searched for his student email? but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:05:23.275418"
+      },
+      {
+        "user": "What is Kadapala Sainath Reddy's email?",
+        "bot": "<b>AI Assistant:</b><br>The email for Kadapala Sainath Reddy is:<br>sainathreddy.kadapala@aurora.edu.in",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:05:26.675199"
+      },
+      {
+        "user": "Is he an AIML student?",
+        "bot": "<b>AI Assistant:</b><br>I searched for is he an aiml student? but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:05:34.543039"
+      },
+      {
+        "user": "What is his department?",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'what is his department?' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:05:38.470590"
+      },
+      {
+        "user": "Who is the HOD?",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'who is the hod?' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:05:44.411182"
+      },
+      {
+        "user": "Who are the faculty members?",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'who are the faculty members?' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:05:50.166239"
+      },
+      {
+        "user": "Provide contact for a professor",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'provide contact for a professor' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:05:55.806618"
+      },
+      {
+        "user": "Provide contact for Dr.Rajeev srivasthav",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'provide contact for dr.rajeev srivasthav' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:06:00.923682"
+      },
+      {
+        "user": "Search for a different professor",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'search for a different professor' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:06:08.507051"
+      },
+      {
+        "user": "List all available professors",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'list all available professors' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:06:12.952844"
+      },
+      {
+        "user": "List faculty members",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'list faculty members' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:06:16.343432"
+      },
+      {
+        "user": "Is Dr. Rajeshwari available",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'is dr. rajeshwari available' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:06:21.668811"
+      },
+      {
+        "user": "aruna",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'aruna' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:06:26.256159"
+      },
+      {
+        "user": "kuhsal",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'kuhsal' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:06:37.679052"
+      },
+      {
+        "user": "aruna",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'aruna' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:06:41.175052"
+      },
+      {
+        "user": "can i know aruna faculty details",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'can i know aruna faculty details' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:07:04.850138"
+      },
+      {
+        "user": "Is Dr. V. Aruna available?",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'is dr. v. aruna available?' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Student",
+        "timestamp": "2026-04-02T03:07:09.399398"
+      },
+      {
+        "user": "Faculty contact information",
+        "bot": "<b>AI Assistant:</b><br>I have found contact information for the following faculty members:<br><br>**Ms. T Malathi**<br>Phone: 9390016850<br>Email: malathi@aurora.edu.in<br><br>**Dr. Harsha Shastri V**<br>Phone: 9848543293<br>Email: harshasastry@aurora.edu.in<br><br>**Mr. R.K Raman**<br>Phone: 9550147310<br>Email: raman@aurora.edu.in<br><br>**Mr. K. Srinivas Rao**<br>Phone: 9676539764<br>Email: srinivasrao@aurora.edu.in<br><br>**Ms. B. Varshini Priyamvada**<br>Phone: 8464096959<br>Email: varshini@aurora.edu.in<br><br>**Mr. M. Mohan Rao**<br>Phone: 8519980032<br>Email: mohanrao@aurora.edu.in",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:07:17.418464"
+      },
+      {
+        "user": "What is Ms. T Malathi's designation?",
+        "bot": "<b>AI Assistant:</b><br>I searched for 'what is ms. t malathi's designation?' but found no matching record. Please check the spelling or try the exact full name.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:07:27.547914"
+      },
+      {
+        "user": "What is Ms. T Malathi's designation?",
+        "bot": "<b>AI Assistant:</b><br>I do not have that in current university records.",
+        "feature": "Faculty",
+        "timestamp": "2026-04-02T03:07:41.907085"
+      }
+    ],
+    "created_at": "2026-04-02T03:03:33.187525",
+    "title": "New Conversation"
+  },
+  "0b34daf6": {
+    "messages": [],
+    "created_at": "2026-04-02T03:12:08.648958",
+    "title": "New Conversation"
+  }
+}

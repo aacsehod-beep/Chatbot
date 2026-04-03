@@ -802,6 +802,15 @@ def _fuzzy_name(q):
 # ==============================
 def _detect_intent(q_raw: str):
     q=q_raw.lower().strip()
+
+    # Strip common conversational filler so name/identifier is cleanly extracted
+    q = re.sub(
+        r"^(i\s+want\s+(to\s+)?(know|find|see|get|search)|tell\s+me|show\s+me|"
+        r"give\s+me|find|search\s+for|look\s+up|can\s+you\s+(tell|show|find)|please)\s*"
+        r"(about|for|of|on|regarding)?\s*",
+        "", q
+    ).strip()
+
     digits=re.sub(r"\D","",q)
     alnum=re.sub(r"[^A-Za-z0-9]","",q_raw)
 
