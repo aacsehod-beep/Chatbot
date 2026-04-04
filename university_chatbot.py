@@ -1,268 +1,167 @@
+"""
+university_chatbot.py — AuroMate
+Text-to-SQL pipeline: user query → Gemini generates SQL → SQLite → Gemini formats answer
+"""
+
 from flask import Flask, render_template, request, jsonify
-import pandas as pd
+import sqlite3
 import json
 import uuid
 import os
+import re
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
 
-# Import your real modules
-from modules.faculty import get_faculty_info
-from modules.attendance import gui_get_attendance
-from modules.student import get_student_info, data as student_data
-from modules.timetable import gui_get_timetable
-from modules.workload import gui_get_workload, FILE_PATH
-
 app = Flask(__name__)
 
-# Load environment variables
 load_dotenv()
 
-# Conversation storage
+# ─────────────────────────────────────────────
+# DB + Conversation setup
+# ─────────────────────────────────────────────
+DB_PATH = "university.db"
 CONVERSATIONS_FILE = Path("conversations.json")
 if not CONVERSATIONS_FILE.exists():
     CONVERSATIONS_FILE.write_text(json.dumps({}))
 
-# Preload data
-student_sections = student_data['Section'].unique()
-faculty_names = pd.ExcelFile(FILE_PATH).sheet_names
-
-# Feature auto-detection keyword map (order matters — checked top to bottom)
-FEATURE_KEYWORDS = {
-    'Workload':   ['workload', 'free now', 'free today', 'who is free', 'free period',
-                   'faculty free', 'free slot', 'currently free', 'teaching now'],
-    'Timetable':  ['timetable', 'time table', 'schedule', 'which class', 'next class',
-                   'class incharge', 'who teaches', 'which subject',
-                   'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',
-                   'period', 'class schedule'],
-    'Attendance': ['attendance', 'present', 'absent', 'percentage', 'shortage', 'defaulter'],
-    'Faculty':    ['faculty', 'professor', 'teacher', 'lecturer', 'hod', 'principal',
-                   'designation', 'department', 'staff', 'cug'],
-    'Student':    ['student', 'reg no', 'registration', 'parent contact', 'parent number',
-                   'student contact', 'section list', 'reg.no', 'roll no', 'roll number'],
-}
-
-def auto_detect_feature(user_input):
-    """Detect which module to use via keyword matching. Defaults to Student."""
-    q = user_input.lower()
-    for feature, keywords in FEATURE_KEYWORDS.items():
-        if any(k in q for k in keywords):
-            return feature
-    return 'Student'
-
-# Gemini AI setup
+# ─────────────────────────────────────────────
+# Gemini setup
+# ─────────────────────────────────────────────
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 gemini_client = None
-
 if GEMINI_API_KEY:
     try:
         gemini_client = genai.Client(api_key=GEMINI_API_KEY)
     except Exception:
         gemini_client = None
 
-# Conversation Management Functions
-def save_conversation(conv_id, user_msg, bot_msg, feature):
+# ─────────────────────────────────────────────
+# DB schema description sent to Gemini
+# ─────────────────────────────────────────────
+DB_SCHEMA = """
+Database: university.db (SQLite)
+
+Tables and columns:
+
+faculty
+  id, sno, name, doj, designation, phone, cug, role, official_email, personal_email, department
+  -- 40 rows. Stores faculty contact & designation info.
+  -- Example: name='Ms. K. Jayasri', phone='9100000661', designation='Asst.Prof.,CSE,SoE', department='School of Engineering'
+
+students
+  id, reg_no, name, student_phone, parent_phone, email, section
+  -- 348 rows. One row per student.
+  -- section values: AIML-2A, AIML-2B, AIML-2C, AIML-3A, AIML-3B, CSE-2A, CSE-2B, CSE-2C, CSE-3A, CSE-3B, CSE-3C, DS-2A, DS-3A
+  -- reg_no pattern: like '231U1R1001', '241U1R2061'
+  -- Example: reg_no='231U1R2001', name='Patabandula Ramesh', section='AIML-3A'
+
+timetable
+  id, section, day, hour, subject, teacher, class_incharge
+  -- 596 rows. One row per section/day/hour slot.
+  -- hour values: H1, H2, H3, H4, H5, H6, H7, H8
+  -- day values: Monday, Tuesday, Wednesday, Thursday, Friday (may have trailing space — use LIKE or TRIM)
+  -- subject and teacher are text strings.
+  -- class_incharge is from row 9 of the timetable sheet.
+  -- Example: section='CSE-3A', day='Monday', hour='H1', subject='Software Engineering(T)-Dr.B.Pannalal'
+
+workload
+  id, faculty, day, hour, subject_section
+  -- 496 rows. One row per faculty/day/hour.
+  -- faculty name = full name like 'Ms.Swathi', 'Dr.Mahesh prabhu', 'Mr.Ravikanth'
+  -- subject_section contains subject name and class section e.g. 'Computer Networks CSE III-A'
+  -- Use LIKE '%name%' to search faculty by partial name.
+  -- Example: faculty='Ms.Swathi', day='Monday', hour='H3', subject_section='Computer Networks CSE III-A'
+
+attendance
+  id, week, section, reg_no, name, subject, held, attended, percentage
+  -- 4230 rows. One row per student per subject per week.
+  -- week values: 'week1', 'week2'
+  -- percentage is integer (0-100). Defaulters: percentage < 75
+  -- Example: week='week1', section='CSE-2A', name='Yadagiri Kushal Goud', subject='Python Programming', percentage=48
+"""
+
+# ─────────────────────────────────────────────
+# Conversation helpers
+# ─────────────────────────────────────────────
+def save_conversation(conv_id, user_msg, bot_msg, feature="General"):
     convs = json.loads(CONVERSATIONS_FILE.read_text())
     if conv_id not in convs:
-        convs[conv_id] = {"messages": [], "created_at": datetime.now().isoformat(), "title": "New Conversation"}
+        convs[conv_id] = {
+            "messages": [],
+            "created_at": datetime.now().isoformat(),
+            "title": "New Conversation"
+        }
     convs[conv_id]["messages"].append({
         "user": user_msg,
         "bot": bot_msg,
         "feature": feature,
         "timestamp": datetime.now().isoformat()
     })
+    if len(convs[conv_id]["messages"]) == 1:
+        convs[conv_id]["title"] = user_msg[:50]
+    convs[conv_id]["messages"] = convs[conv_id]["messages"][-200:]
     CONVERSATIONS_FILE.write_text(json.dumps(convs, indent=2))
 
 def get_conversations():
     return json.loads(CONVERSATIONS_FILE.read_text())
 
 
-def get_recent_conversation_context(conv_id, max_turns=6):
-    """Return recent user/bot turns as plain text context for multi-turn AI responses."""
+def get_recent_context(conv_id, max_turns=4):
     if not conv_id:
         return ""
-
     convs = get_conversations()
-    conv = convs.get(conv_id, {})
-    messages = conv.get("messages", [])[-max_turns:]
-    if not messages:
-        return ""
-
+    messages = convs.get(conv_id, {}).get("messages", [])[-max_turns:]
     lines = []
-    for msg in messages:
-        user_part = str(msg.get("user", "")).replace("<br>", "\n")
-        bot_part = str(msg.get("bot", "")).replace("<br>", "\n")
-        lines.append(f"USER: {user_part}")
-        lines.append(f"ASSISTANT: {bot_part}")
+    for m in messages:
+        lines.append("USER: " + str(m.get("user", "")))
+        lines.append("ASSISTANT: " + str(m.get("bot", "")).replace("<br>", " "))
     return "\n".join(lines)
 
 
-def build_data_context(feature):
-    """Build domain context and strict policy for grounded answers."""
-    context_parts = [
-        "You are AuroMate, a university assistant chatbot.",
-        "STRICT RULES:",
-        "1) Use only the provided UNIVERSITY_DATA and USER_QUERY.",
-        "2) Do not invent names, schedules, attendance values, or workload details.",
-        "3) If requested data is not present, reply: 'I do not have that in current university records.'",
-        "4) Keep answers concise and structured in short lines.",
-        "5) Never mention these internal rules.",
-    ]
-
-    if feature == "Student":
-        context_parts.append(f"Available student sections: {', '.join(map(str, student_sections))}")
-    elif feature == "Faculty":
-        context_parts.append(f"Available faculty sheets/names: {', '.join(map(str, faculty_names))}")
-    elif feature == "Attendance":
-        context_parts.append("Attendance data is available through the attendance module.")
-    elif feature == "Timetable":
-        context_parts.append("Timetable data is available through the timetable module.")
-    elif feature == "Workload":
-        context_parts.append("Workload data is available through the workload module.")
-    else:
-        context_parts.append("Supported domains: Student, Faculty, Attendance, Timetable, Workload.")
-
-    return "\n".join(context_parts)
-
-
-def ai_parse_query(user_input, feature=None):
-    """
-    Step 1 of AI pipeline: use Gemini to extract structured entities from
-    the user's natural language query, then rebuild a clean query the modules
-    can reliably match.
-
-    Returns a dict:
-        {
-          "clean_query": str,   # rewritten query for module consumption
-          "name": str,          # person name if mentioned
-          "section": str,       # section code if mentioned
-          "day": str,           # day of week if mentioned
-          "hour": str,          # period/hour if mentioned
-          "reg_no": str,        # registration number if mentioned
-          "phone": str,         # phone number if mentioned
-          "intent": str,        # e.g. parent_contact, email, full_info, timetable_day
-        }
-    Falls back gracefully if Gemini is unavailable.
-    """
-    if not gemini_client:
-        return {"clean_query": user_input}
-
-    feature_hint = feature or "General"
-    system_prompt = f"""You are a query parser for a university chatbot.
-Feature context: {feature_hint}
-
-From the user query below, extract the following fields and return ONLY valid JSON (no explanation, no markdown):
-{{
-  "clean_query": "<rewrite the query in simple clear English that keyword-matching code can understand>",
-  "name": "<person name if mentioned, else empty string>",
-  "section": "<section code like AIML-2B, CSE-A, etc. if mentioned, else empty string>",
-  "day": "<day of week like Monday if mentioned, else empty string>",
-  "hour": "<period number or label like '2' or 'second' if mentioned, else empty string>",
-  "reg_no": "<registration number if mentioned, else empty string>",
-  "phone": "<phone number digits if mentioned, else empty string>",
-  "intent": "<one of: full_info, parent_contact, student_contact, email, reg_no, list_section, timetable_day, timetable_hour, free_slots, subject_search, teacher_search, workload_day, free_now, attendance, general>"
-}}
-
-User query: {user_input}"""
-
+# ─────────────────────────────────────────────
+# DB query runner
+# ─────────────────────────────────────────────
+def run_sql(sql):
+    """Execute a SELECT query. Returns (columns, rows). Only SELECT allowed."""
+    sql_stripped = sql.strip().lstrip(";").strip()
+    if not re.match(r'(?i)^\s*SELECT\b', sql_stripped):
+        raise ValueError("Only SELECT queries are allowed.")
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     try:
-        result = gemini_client.models.generate_content(
-            model=GEMINI_MODEL_NAME,
-            contents=system_prompt,
-        )
-        raw = (result.text or "").strip()
-        # Strip markdown code fences if present
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-        parsed = json.loads(raw.strip())
-        # Ensure clean_query always exists
-        if not parsed.get("clean_query"):
-            parsed["clean_query"] = user_input
-        return parsed
-    except Exception:
-        return {"clean_query": user_input}
+        cursor = conn.execute(sql_stripped)
+        rows = cursor.fetchall()
+        columns = [d[0] for d in cursor.description] if cursor.description else []
+        return columns, [dict(r) for r in rows]
+    finally:
+        conn.close()
 
 
-def _build_module_query(parsed, user_input):
-    """
-    Build the best possible query string for a module from parsed AI entities.
-    Prefers structured fields (name + section + intent keywords) over raw input.
-    """
-    parts = []
-    intent = parsed.get("intent", "")
-    name = parsed.get("name", "").strip()
-    section = parsed.get("section", "").strip()
-    day = parsed.get("day", "").strip()
-    hour = parsed.get("hour", "").strip()
-    reg_no = parsed.get("reg_no", "").strip()
-    phone = parsed.get("phone", "").strip()
-
-    # Intent-specific keyword injection so modules can keyword-match reliably
-    intent_keywords = {
-        "parent_contact":   "parent contact number",
-        "student_contact":  "student contact number",
-        "email":            "email",
-        "reg_no":           "registration number",
-        "list_section":     "list students in",
-        "full_info":        "full information",
-        "timetable_day":    "timetable",
-        "timetable_hour":   "timetable hour",
-        "free_slots":       "free slots",
-        "subject_search":   "subject",
-        "teacher_search":   "teacher",
-        "workload_day":     "workload",
-        "free_now":         "who is free now",
-        "attendance":       "attendance",
-    }
-
-    if phone:
-        return phone
-    if reg_no:
-        return reg_no
-
-    if intent in intent_keywords:
-        parts.append(intent_keywords[intent])
-    if name:
-        parts.append(name)
-    if section:
-        parts.append(section)
-    if day:
-        parts.append(day)
-    if hour:
-        parts.append(f"hour {hour}")
-
-    return " ".join(parts) if parts else parsed.get("clean_query", user_input)
+def format_rows_as_text(columns, rows, max_rows=50):
+    """Convert query results to compact readable text for Gemini."""
+    if not rows:
+        return "No records found."
+    limited = rows[:max_rows]
+    lines = []
+    for r in limited:
+        parts = [
+            f"{c}: {r.get(c, '')}"
+            for c in columns
+            if r.get(c) is not None and str(r.get(c, '')).strip() not in ('', 'nan', 'None')
+        ]
+        if parts:
+            lines.append("  • " + " | ".join(parts))
+    suffix = f"\n  (showing {max_rows} of {len(rows)} total records)" if len(rows) > max_rows else ""
+    return "\n".join(lines) + suffix
 
 
-def get_feature_data_snapshot(user_input, feature=None):
-    """Collect concrete data from existing modules to ground AI output."""
-    if not feature:
-        return "No feature selected. Valid features: Student, Faculty, Attendance, Timetable, Workload."
-
-    try:
-        if feature == "Student":
-            return get_student_info(user_input)
-        if feature == "Faculty":
-            return get_faculty_info(user_input)
-        if feature == "Attendance":
-            return gui_get_attendance(user_input)
-        if feature == "Timetable":
-            timetable_lines = gui_get_timetable(user_input)
-            return "\n".join(timetable_lines) if isinstance(timetable_lines, list) else str(timetable_lines)
-        if feature == "Workload":
-            return gui_get_workload(user_input)
-        return "Unsupported feature selected."
-    except Exception as err:
-        return f"Data lookup error: {err}"
-
-
+# ─────────────────────────────────────────────
+# Language detection
+# ─────────────────────────────────────────────
 def _detect_language(text):
-    """Return 'Telugu' if Telugu script detected, 'Hindi' if Devanagari, else None."""
     for ch in text:
         cp = ord(ch)
         if 0x0C00 <= cp <= 0x0C7F:
@@ -273,214 +172,355 @@ def _detect_language(text):
 
 
 def _is_conversational(text):
-    """True if the message is a greeting or small-talk rather than a data query."""
     patterns = [
         r'^(hi|hello|hey|good morning|good afternoon|good evening|hii+|helo|sup)\b',
         r'^(thank|thanks|thx|ok|okay|got it|sure|bye|goodbye|see you)',
         r'^(who are you|what can you do|help me|what do you do|tell me about yourself)',
         r'^(how are you|how r u)',
     ]
-    import re as _re
     t = text.strip().lower()
-    return any(_re.match(p, t) for p in patterns)
+    return any(re.match(p, t) for p in patterns)
 
 
-def ai_generate_response(user_input, feature=None, conv_id=None, module_query=None):
-    """
-    Full AI pipeline:
-      1) If conversational → handle with pure chat (no DB call).
-      2) Otherwise: fetch module data using `module_query` (AI-parsed clean query),
-         then ask Gemini to produce a natural answer + suggestions.
-      3) Detect Telugu/Hindi → respond in that language.
-    Returns (response_html, suggestions_list) or (None, []) on failure.
-    """
+# ─────────────────────────────────────────────
+# Core Text-to-SQL pipeline
+# ─────────────────────────────────────────────
+def generate_sql(user_input, recent_context=""):
+    """Ask Gemini to generate a safe SQLite SELECT query from natural language."""
+    if not gemini_client:
+        return None
+
+    prompt = f"""You are a SQL expert for a university database. Convert the user's question into a SQLite SELECT query.
+
+{DB_SCHEMA}
+
+RULES:
+1. Output ONLY the raw SQL query — no markdown, no explanation, no code fences.
+2. Only use SELECT statements. Never use INSERT, UPDATE, DELETE, DROP.
+3. Use TRIM() on text fields when filtering (data may have trailing spaces).
+4. Use LIKE '%value%' for partial name/text matches instead of exact equality.
+5. For attendance defaulters/shortage: WHERE percentage < 75
+6. Limit results to 50 rows. Add LIMIT 50 if no LIMIT already.
+7. Return NULL if the question cannot be answered from this database.
+8. For timetable day filtering, use LIKE '%Monday%' to handle trailing spaces.
+9. When user asks about a specific student by name, use LIKE on the name column.
+10. For free faculty: SELECT DISTINCT faculty FROM workload WHERE day LIKE '%Monday%' and hour NOT IN (SELECT hour FROM workload WHERE faculty LIKE '%name%' AND day LIKE '%Monday%')
+
+Recent conversation:
+{recent_context or "None"}
+
+User question: {user_input}
+
+SQL:"""
+
+    try:
+        result = gemini_client.models.generate_content(
+            model=GEMINI_MODEL_NAME,
+            contents=prompt,
+        )
+        sql = (result.text or "").strip()
+        if sql.startswith("```"):
+            sql = sql.split("```")[1]
+            if sql.lower().startswith("sql"):
+                sql = sql[3:]
+        sql = sql.strip().rstrip(";")
+        if sql.upper() == "NULL" or not sql:
+            return None
+        return sql
+    except Exception:
+        return None
+
+
+def format_with_gemini(user_input, sql, columns, rows, recent_context=""):
+    """Ask Gemini to write a conversational answer from query results."""
     if not gemini_client:
         return None, []
 
+    data_text = format_rows_as_text(columns, rows)
+    lang = _detect_language(user_input)
+    lang_instruction = f"Respond entirely in {lang}.\n" if lang else ""
+
+    prompt = f"""You are AuroMate, a friendly AI university assistant.
+
+The user asked: "{user_input}"
+
+SQL query executed:
+{sql}
+
+Query results:
+{data_text}
+
+{lang_instruction}
+Instructions:
+- Present the data naturally and conversationally.
+- Use bullet points or numbered lists where it helps readability.
+- If no results: apologize briefly and suggest what to try (spelling, full name, specify section).
+- If many rows: summarize the key insight first, then list details.
+- NEVER invent data — only use what's in the query results above.
+- Be concise and warm.
+
+Recent conversation:
+{recent_context or "None"}
+
+After your answer, on a new line write exactly:
+SUGGESTIONS: <follow-up question 1> | <follow-up question 2> | <follow-up question 3>
+(Each suggestion max 7 words. Make them relevant to what was just discussed.)"""
+
     try:
-        lang = _detect_language(user_input)
-        lang_instruction = f"Respond entirely in {lang}.\n" if lang else ""
-        recent_context = get_recent_conversation_context(conv_id)
-
-        # ── Branch A: pure conversational ──────────────────────────────────
-        if _is_conversational(user_input):
-            prompt = (
-                "You are AuroMate, a friendly AI academic assistant for a university.\n"
-                "You can answer questions about students, faculty, attendance, timetables and workload.\n"
-                f"{lang_instruction}"
-                f"Recent chat:\n{recent_context or 'None'}\n\n"
-                f"User said: \"{user_input}\"\n"
-                "Reply naturally and warmly in 1-2 sentences. "
-                "Then on a new line write:\n"
-                "SUGGESTIONS: <question1> | <question2> | <question3>\n"
-                "Suggest 3 things the user can ask AuroMate next (max 7 words each)."
-            )
-            result = gemini_client.models.generate_content(model=GEMINI_MODEL_NAME, contents=prompt)
-            text = (result.text or "").strip()
-            suggestions = []
-            if "SUGGESTIONS:" in text:
-                main_text, raw_sugg = text.split("SUGGESTIONS:", 1)
-                suggestions = [s.strip() for s in raw_sugg.split("|") if s.strip()][:3]
-            else:
-                main_text = text
-            return main_text.strip().replace("\n", "<br>"), suggestions
-
-        # ── Branch B: data query ────────────────────────────────────────────
-        # Use AI-parsed clean query for module lookup if available
-        lookup_query = module_query if module_query else user_input
-        raw_data = get_feature_data_snapshot(lookup_query, feature)
-        context = build_data_context(feature)
-
-        prompt = (
-            f"{context}\n\n"
-            f"Active module: {feature or 'General'}\n"
-            f"What the user asked (original): \"{user_input}\"\n"
-            f"Parsed query sent to database: \"{lookup_query}\"\n\n"
-            f"Recent conversation:\n{recent_context or 'None'}\n\n"
-            f"Database result:\n{raw_data}\n\n"
-            f"{lang_instruction}"
-            "Your job:\n"
-            "- If the database result has real data: present it clearly and naturally, "
-            "like a helpful human assistant would. Use line breaks for readability. "
-            "Do NOT just copy-paste raw text — rewrite it conversationally.\n"
-            "- If the database says no record found / ❌: apologize naturally and suggest "
-            "what the user might try instead (check spelling, use full name, specify section, etc.).\n"
-            "- If the query is ambiguous (e.g., no name given): ask ONE specific clarifying question.\n"
-            "- NEVER invent any names, numbers, schedules, or contact details.\n"
-            "- Be concise, warm, and conversational — like ChatGPT would respond.\n\n"
-            "After your answer, on a NEW line write exactly:\n"
-            "SUGGESTIONS: <question1> | <question2> | <question3>\n"
-            "These are 2-3 natural follow-up questions the user might ask next. Max 7 words each."
+        result = gemini_client.models.generate_content(
+            model=GEMINI_MODEL_NAME,
+            contents=prompt,
         )
-
-        result = gemini_client.models.generate_content(model=GEMINI_MODEL_NAME, contents=prompt)
         text = (result.text or "").strip()
-        if not text:
-            return None, []
-
         suggestions = []
         if "SUGGESTIONS:" in text:
             main_text, raw_sugg = text.split("SUGGESTIONS:", 1)
             suggestions = [s.strip() for s in raw_sugg.split("|") if s.strip()][:3]
         else:
             main_text = text
-
-        return main_text.strip().replace("\n", "<br>"), suggestions
+        return main_text.strip(), suggestions
     except Exception:
         return None, []
 
 
-def deterministic_query_response(user_input, feature=None):
-    """Existing rule-based response path (fallback and data-safe mode)."""
-    if feature == "Student":
-        info = get_student_info(user_input)
-        return f"<b>Student Info:</b><br>{info.replace(chr(10), '<br>')}"
-
-    elif feature == "Faculty":
-        info = get_faculty_info(user_input)
-        return f"<b>Faculty Info:</b><br>{info.replace(chr(10), '<br>')}"
-
-    elif feature == "Attendance":
-        info = gui_get_attendance(user_input)
-        return f"<b>Attendance:</b><br>{info.replace(chr(10), '<br>')}"
-
-    elif feature == "Timetable":
-        timetable_lines = gui_get_timetable(user_input)
-        html = "<b>Timetable:</b><br><ul>"
-        for line in timetable_lines:
-            if line.strip() == "":
-                continue
-            if line.startswith("---") or "Timetable" in line:
-                html += f"<li><b>{line}</b></li>"
-            else:
-                html += f"<li>{line}</li>"
-        html += "</ul>"
-        return html
-
-    elif feature == "Workload":
-        info = gui_get_workload(user_input)
-        return f"<b>Workload:</b><br>{info.replace(chr(10), '<br>')}"
-
-    else:
+def handle_conversational(user_input, recent_context=""):
+    """Handle greetings and small-talk."""
+    if not gemini_client:
         return (
-            "🤖 I can answer questions about <b>Student, Faculty, Attendance, Timetable, or Workload</b>. "
-            "Please specify clearly."
+            "Hello! I'm AuroMate, your university assistant. "
+            "Ask me about students, faculty, attendance, timetables, or workload.",
+            ["Show attendance for CSE-2A", "What is Dr. Swathi's schedule?", "List AIML-3A students"]
         )
-
-# ---------------- Query Processing ----------------
-def process_query(user_input, feature=None, conv_id=None):
-    # Step 1 — resolve feature (sidebar selection wins; else auto-detect from keywords)
-    resolved = feature if feature else auto_detect_feature(user_input)
-
-    # Step 2 — AI query parsing: extract entities & build clean module query
-    parsed   = ai_parse_query(user_input, resolved)
-    mod_query = _build_module_query(parsed, user_input)
-
-    # Step 3 — AI response with parsed query for better data retrieval
-    ai_response, suggestions = ai_generate_response(
-        user_input, resolved, conv_id, module_query=mod_query
+    prompt = (
+        "You are AuroMate, a friendly AI academic assistant for Aurora University.\n"
+        "You help with student info, faculty contacts, attendance, timetables and faculty workload.\n"
+        f"Recent chat:\n{recent_context or 'None'}\n\n"
+        f"User said: \"{user_input}\"\n"
+        "Reply naturally and warmly in 1-2 sentences.\n"
+        "Then on a new line write:\n"
+        "SUGGESTIONS: <question1> | <question2> | <question3>\n"
+        "Suggest 3 relevant things the user can ask AuroMate (max 7 words each)."
     )
-    if ai_response:
-        return f"<b>AI Assistant:</b><br>{ai_response}", True, resolved, suggestions
+    try:
+        result = gemini_client.models.generate_content(model=GEMINI_MODEL_NAME, contents=prompt)
+        text = (result.text or "").strip()
+        suggestions = []
+        if "SUGGESTIONS:" in text:
+            main_text, raw_sugg = text.split("SUGGESTIONS:", 1)
+            suggestions = [s.strip() for s in raw_sugg.split("|") if s.strip()][:3]
+        else:
+            main_text = text
+        return main_text.strip(), suggestions
+    except Exception:
+        return "Hello! I'm AuroMate. How can I help you today?", []
 
-    # Step 4 — deterministic fallback (no Gemini / error)
-    return deterministic_query_response(mod_query, resolved), False, resolved, []
 
-# ---------------- Routes ----------------
+def _self_correct_sql(bad_sql, error_msg, user_input):
+    """Ask Gemini to fix a broken SQL query."""
+    if not gemini_client:
+        return None
+    prompt = f"""The following SQLite query failed with error: {error_msg}
+
+Bad SQL:
+{bad_sql}
+
+{DB_SCHEMA}
+
+Fix the SQL query. Output ONLY the corrected raw SQL — no explanation, no markdown.
+If it cannot be fixed, output: NULL
+
+Original user question: {user_input}
+
+Fixed SQL:"""
+    try:
+        result = gemini_client.models.generate_content(model=GEMINI_MODEL_NAME, contents=prompt)
+        fixed = (result.text or "").strip().rstrip(";")
+        if fixed.upper() == "NULL" or not fixed:
+            return None
+        if fixed.startswith("```"):
+            fixed = fixed.split("```")[1]
+            if fixed.lower().startswith("sql"):
+                fixed = fixed[3:]
+        return fixed.strip()
+    except Exception:
+        return None
+
+
+def _detect_feature_from_sql(sql):
+    """Infer module label from SQL table references."""
+    sql_lower = sql.lower()
+    if "attendance" in sql_lower:
+        return "Attendance"
+    if "workload" in sql_lower:
+        return "Workload"
+    if "timetable" in sql_lower:
+        return "Timetable"
+    if "faculty" in sql_lower:
+        return "Faculty"
+    if "student" in sql_lower:
+        return "Student"
+    return "General"
+
+
+# ─────────────────────────────────────────────
+# Main query processor
+# ─────────────────────────────────────────────
+def process_query(user_input, feature=None, conv_id=None):
+    """
+    Full pipeline:
+      1. Conversational check → friendly chat
+      2. Gemini generates SQL
+      3. SQL runs on SQLite
+      4. Gemini formats results conversationally
+      5. Fallback: raw data if Gemini formatting fails
+    Returns (response_html, ai_used, detected_feature, suggestions)
+    """
+    recent_context = get_recent_context(conv_id)
+
+    # Step 1: conversational
+    if _is_conversational(user_input):
+        text, suggestions = handle_conversational(user_input, recent_context)
+        return text.replace("\n", "<br>"), True, "General", suggestions
+
+    # Step 2: generate SQL
+    sql = generate_sql(user_input, recent_context)
+    if not sql:
+        fallback = (
+            "I wasn't able to process that query. "
+            "You can ask me about: student contacts, faculty info, class timetables, "
+            "faculty workload, or student attendance."
+        )
+        return fallback, False, "General", []
+
+    # Step 3: run SQL
+    try:
+        columns, rows = run_sql(sql)
+    except Exception as e:
+        corrected_sql = _self_correct_sql(sql, str(e), user_input)
+        if corrected_sql:
+            try:
+                columns, rows = run_sql(corrected_sql)
+                sql = corrected_sql
+            except Exception:
+                return "I had trouble querying the database. Could you rephrase your question?", False, "General", []
+        else:
+            return "I had trouble querying the database. Could you rephrase your question?", False, "General", []
+
+    detected_feature = _detect_feature_from_sql(sql)
+
+    # Step 4: format with Gemini
+    response_text, suggestions = format_with_gemini(user_input, sql, columns, rows, recent_context)
+    if response_text:
+        return response_text.replace("\n", "<br>"), True, detected_feature, suggestions
+
+    # Step 5: raw fallback
+    raw_text = format_rows_as_text(columns, rows)
+    if not raw_text or raw_text == "No records found.":
+        return "No matching records found in the database.", False, detected_feature, []
+    return raw_text.replace("\n", "<br>"), False, detected_feature, []
+
+# ─────────────────────────────────────────────
+# Routes
+# ─────────────────────────────────────────────
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/ask", methods=["POST"])
 def ask():
     data = request.get_json()
-    user_input = data.get("message", "")
+    user_input = (data.get("message", "") or "").strip()
+    if not user_input:
+        return jsonify({"response": "Please enter a message.", "ai_used": False,
+                        "detected_feature": "General", "suggestions": []})
     feature = data.get("feature", None)
     conv_id = data.get("convId", None)
+
     response, ai_used, detected_feature, suggestions = process_query(user_input, feature, conv_id)
-    
-    # Save to conversation history
+
     if conv_id:
         save_conversation(conv_id, user_input, response, detected_feature)
-    
-    return jsonify({"response": response, "ai_used": ai_used,
-                    "detected_feature": detected_feature, "suggestions": suggestions})
+
+    return jsonify({
+        "response": response,
+        "ai_used": ai_used,
+        "detected_feature": detected_feature,
+        "suggestions": suggestions
+    })
 
 
 @app.route("/ai-status", methods=["GET"])
 def ai_status():
-    """Expose AI readiness info for UI indicator."""
     return jsonify({
         "configured": bool(gemini_client),
         "provider": "Gemini",
         "model": GEMINI_MODEL_NAME,
     })
 
+
 @app.route("/new-conversation", methods=["POST"])
 def new_conversation():
-    """Create a new conversation"""
-    conv_id = str(uuid.uuid4())[:8]
-    convs = json.loads(CONVERSATIONS_FILE.read_text())
-    convs[conv_id] = {"messages": [], "created_at": datetime.now().isoformat(), "title": "New Conversation"}
+    conv_id = str(uuid.uuid4())
+    convs = get_conversations()
+    convs[conv_id] = {
+        "messages": [],
+        "created_at": datetime.now().isoformat(),
+        "title": "New Conversation"
+    }
     CONVERSATIONS_FILE.write_text(json.dumps(convs, indent=2))
     return jsonify({"convId": conv_id})
 
+
 @app.route("/conversations", methods=["GET"])
-def get_conversations_endpoint():
-    """Get all conversations"""
-    return jsonify(get_conversations())
+def conversations_endpoint():
+    convs = get_conversations()
+    result = []
+    for cid, cdata in convs.items():
+        msgs = cdata.get("messages", [])
+        result.append({
+            "id": cid,
+            "title": cdata.get("title", "Conversation"),
+            "created_at": cdata.get("created_at", ""),
+            "message_count": len(msgs),
+            "last_message": msgs[-1].get("user", "") if msgs else ""
+        })
+    result.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+    return jsonify(result)
+
 
 @app.route("/conversation/<conv_id>", methods=["GET"])
-def get_conversation_endpoint(conv_id):
-    """Get a specific conversation"""
-    convs = json.loads(CONVERSATIONS_FILE.read_text())
+def get_conversation(conv_id):
+    convs = get_conversations()
     return jsonify(convs.get(conv_id, {}))
+
 
 @app.route("/export/<conv_id>", methods=["GET"])
 def export_conversation(conv_id):
-    """Export conversation as JSON"""
-    convs = json.loads(CONVERSATIONS_FILE.read_text())
-    return jsonify(convs.get(conv_id, {}))
+    convs = get_conversations()
+    conv = convs.get(conv_id, {})
+    if not conv:
+        return jsonify({"error": "Conversation not found"}), 404
+    lines = [
+        "AuroMate Conversation Export",
+        f"ID: {conv_id}",
+        f"Date: {conv.get('created_at', '')}",
+        "=" * 50, ""
+    ]
+    for msg in conv.get("messages", []):
+        lines.append(f"You: {msg.get('user', '')}")
+        bot = str(msg.get("bot", "")).replace("<br>", "\n").replace("<b>", "").replace("</b>", "")
+        lines.append(f"AuroMate: {bot}")
+        lines.append("")
+    return "\n".join(lines), 200, {
+        "Content-Type": "text/plain",
+        "Content-Disposition": f"attachment; filename=conversation_{conv_id[:8]}.txt"
+    }
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    if not os.path.exists(DB_PATH):
+        print(f"ERROR: {DB_PATH} not found. Run: python migrate_to_db.py")
+    else:
+        app.run(debug=True, host="0.0.0.0", port=5000)
+
