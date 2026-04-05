@@ -1,0 +1,6 @@
+room_name,block,floor,room_number,category,directions
+Library,Main Building,1st Floor,,Academic,"Take the stairs near the main entrance, walk to the end of the hall."
+Accounts Office,Admin Block,Ground Floor,A-05,Administration,"Located right next to the reception desk."
+Chemistry Lab,Science Wing,2nd Floor,S-201,Laboratory,"Second floor, right wing, opposite the staff room."
+Canteen,Campus Center,Ground Floor,,Facility,"Located behind the Main Building, near the basketball court."
+Staff Room 1,A-Block,1st Floor,A-102,Staff,"First floor corridor, next to the CSE department classrooms."

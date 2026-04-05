@@ -46,41 +46,36 @@ Database: university.db (SQLite)
 
 Tables and columns:
 
+locations
+  id, room_name, block, floor, room_number, category, directions
+  -- Stores building, room navigation, and directions.
+  -- Example: room_name='Staff Room 1', block='A-Block', floor='1st Floor', category='Staff', directions='First corridor'
+
 faculty
-  id, sno, name, doj, designation, phone, cug, role, official_email, personal_email, department
+  id, sno, name, doj, designation, phone, cug, role, official_email, personal_email, department, office_location
   -- 40 rows. Stores faculty contact & designation info.
-  -- Example: name='Ms. K. Jayasri', phone='9100000661', designation='Asst.Prof.,CSE,SoE', department='School of Engineering'
+  -- office_location matches room_name in locations table.
+  -- Example: name='Ms. K. Jayasri', phone='9100000661', designation='Asst.Prof.,CSE,SoE', department='School of Engineering', office_location='Staff Room 1'
 
 students
   id, reg_no, name, student_phone, parent_phone, email, section
   -- 348 rows. One row per student.
-  -- section values: AIML-2A, AIML-2B, AIML-2C, AIML-3A, AIML-3B, CSE-2A, CSE-2B, CSE-2C, CSE-3A, CSE-3B, CSE-3C, DS-2A, DS-3A
-  -- reg_no pattern: like '231U1R1001', '241U1R2061'
-  -- Example: reg_no='231U1R2001', name='Patabandula Ramesh', section='AIML-3A'
+  -- section values: AIML-2A, AIML-2B, CSE-2A, etc.
+  -- reg_no pattern: like '231U1R1001'
 
 timetable
-  id, section, day, hour, subject, teacher, class_incharge
+  id, section, day, hour, subject, teacher, room, class_incharge
   -- 596 rows. One row per section/day/hour slot.
   -- hour values: H1, H2, H3, H4, H5, H6, H7, H8
-  -- day values: Monday, Tuesday, Wednesday, Thursday, Friday (may have trailing space — use LIKE or TRIM)
-  -- subject and teacher are text strings.
-  -- class_incharge is from row 9 of the timetable sheet.
-  -- Example: section='CSE-3A', day='Monday', hour='H1', subject='Software Engineering(T)-Dr.B.Pannalal'
+  -- room column matches room_name in locations table.
+  -- Example: section='CSE-3A', subject='Software Engineering(T)', teacher='Dr.B.Pannalal', room='Room 204'
 
 workload
   id, faculty, day, hour, subject_section
   -- 496 rows. One row per faculty/day/hour.
-  -- faculty name = full name like 'Ms.Swathi', 'Dr.Mahesh prabhu', 'Mr.Ravikanth'
-  -- subject_section contains subject name and class section e.g. 'Computer Networks CSE III-A'
-  -- Use LIKE '%name%' to search faculty by partial name.
-  -- Example: faculty='Ms.Swathi', day='Monday', hour='H3', subject_section='Computer Networks CSE III-A'
 
 attendance
   id, week, section, reg_no, name, subject, held, attended, percentage
-  -- 4230 rows. One row per student per subject per week.
-  -- week values: 'week1', 'week2'
-  -- percentage is integer (0-100). Defaulters: percentage < 75
-  -- Example: week='week1', section='CSE-2A', name='Yadagiri Kushal Goud', subject='Python Programming', percentage=48
 """
 
 # ─────────────────────────────────────────────
@@ -204,7 +199,8 @@ RULES:
 7. Return NULL if the question cannot be answered from this database.
 8. For timetable day filtering, use LIKE '%Monday%' to handle trailing spaces.
 9. When user asks about a specific student by name, use LIKE on the name column.
-10. For free faculty: SELECT DISTINCT faculty FROM workload WHERE day LIKE '%Monday%' and hour NOT IN (SELECT hour FROM workload WHERE faculty LIKE '%name%' AND day LIKE '%Monday%')
+10. To find a faculty's office location details, JOIN faculty and locations: SELECT f.name, l.* FROM faculty f JOIN locations l ON f.office_location = l.room_name WHERE f.name LIKE '%Smith%'
+11. To find a class room location for a section/timetable, JOIN timetable and locations: SELECT t.*, l.block, l.floor, l.directions FROM timetable t JOIN locations l ON t.room = l.room_name
 
 Recent conversation:
 {recent_context or "None"}

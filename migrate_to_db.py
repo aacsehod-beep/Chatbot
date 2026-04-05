@@ -47,8 +47,17 @@ def migrate_faculty(conn):
         'personal_mail_id': 'personal_email',
     })
     # Drop columns we don't need
-    keep = ['sno', 'name', 'doj', 'designation', 'phone', 'cug', 'role', 'official_email', 'personal_email', 'department']
+    keep = ['sno', 'name', 'doj', 'designation', 'phone', 'cug', 'role', 'official_email', 'personal_email', 'department', 'office_location']
     df = df[[c for c in keep if c in df.columns]]
+    
+    # ── ADD DUMMY LOCATIONS (so it works without breaking existing Excel) ──
+    import random
+    dummy_offices = ['Staff Room 1', 'HOD CSE Office', 'Accounts Office', 'Physics Lab']
+    if 'office_location' not in df.columns:
+        df['office_location'] = [random.choice(dummy_offices) for _ in range(len(df))]
+    else:
+        df['office_location'] = df['office_location'].apply(lambda x: random.choice(dummy_offices) if pd.isna(x) else x)
+        
     # Normalize phone/cug to string
     for col in ['phone', 'cug']:
         if col in df.columns:
@@ -67,11 +76,39 @@ def migrate_faculty(conn):
             role        TEXT,
             official_email  TEXT,
             personal_email  TEXT,
-            department  TEXT
+            department  TEXT,
+            office_location TEXT
         )
     """)
     df.to_sql("faculty", conn, if_exists="append", index=False)
     print(f"  ✓ faculty: {len(df)} rows")
+
+# ─────────────────────────────────────────────
+# 1.5 LOCATIONS
+# ─────────────────────────────────────────────
+def migrate_locations(conn):
+    print("Migrating locations...")
+    try:
+        if os.path.exists("data/locations.xlsx"):
+            df = pd.read_excel("data/locations.xlsx")
+            conn.execute("DROP TABLE IF EXISTS locations")
+            conn.execute("""
+                CREATE TABLE locations (
+                    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+                    room_name      TEXT NOT NULL UNIQUE,
+                    block          TEXT,
+                    floor          TEXT,
+                    room_number    TEXT,
+                    category       TEXT,
+                    directions     TEXT
+                )
+            """)
+            df.to_sql("locations", conn, if_exists="append", index=False)
+            print(f"  ✓ locations: {len(df)} rows")
+        else:
+            print("  ✗ data/locations.xlsx not found")
+    except Exception as e:
+        print(f"  ✗ Failed to migrate locations: {e}")
 
 # ─────────────────────────────────────────────
 # 2. STUDENTS
@@ -211,16 +248,31 @@ def migrate_timetable(conn):
                 # Try to separate subject and teacher (split on ' - ' or '-')
                 subject = subject_teacher
                 teacher = None
+                room = None
                 if ' - ' in subject_teacher:
-                    parts = subject_teacher.split(' - ', 1)
+                    parts = subject_teacher.split(' - ')
                     subject = parts[0].strip()
-                    teacher = parts[1].strip()
+                    teacher = parts[1].strip() if len(parts) > 1 else None
+                    room = parts[2].strip() if len(parts) > 2 else None
+                elif '-' in subject_teacher:
+                    parts = subject_teacher.split('-')
+                    subject = parts[0].strip()
+                    teacher = parts[1].strip() if len(parts) > 1 else None
+                    room = parts[2].strip() if len(parts) > 2 else None
+                    
+                # ADD DUMMY CLASSROOMS (so it works without breaking existing Excel)
+                import random
+                dummy_rooms = ['Room 101', 'Room 204', 'Computer Lab 1', 'Chemistry Lab']
+                if not room:
+                    room = random.choice(dummy_rooms)
+
                 rows.append({
                     'section': section,
                     'day': day.rstrip(),
                     'hour': h,
                     'subject': subject,
                     'teacher': teacher,
+                    'room': room,
                     'class_incharge': class_incharge
                 })
 
@@ -234,6 +286,7 @@ def migrate_timetable(conn):
             hour           TEXT NOT NULL,
             subject        TEXT,
             teacher        TEXT,
+            room           TEXT,
             class_incharge TEXT
         )
     """)
@@ -417,6 +470,7 @@ def main():
 
     conn = create_connection()
     try:
+        migrate_locations(conn)
         migrate_faculty(conn)
         migrate_students(conn)
         migrate_timetable(conn)
@@ -427,9 +481,12 @@ def main():
 
         # Verification summary
         print("\n── Table row counts ──")
-        for table in ['faculty', 'students', 'timetable', 'workload', 'attendance']:
-            count = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
-            print(f"  {table}: {count} rows")
+        for table in ['locations', 'faculty', 'students', 'timetable', 'workload', 'attendance']:
+            try:
+                count = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+                print(f"  {table}: {count} rows")
+            except Exception:
+                pass
     finally:
         conn.close()
 

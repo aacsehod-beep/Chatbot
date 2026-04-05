@@ -8,170 +8,216 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
   
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons & Marked for Markdown -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
     :root {
-      --bg-color: #f9f9f8;
-      --text-main: #3d3935;
-      --text-dim: #76716a;
-      --pill-bg: #ecece8;
-      --pill-hover: #e5e5df;
-      --orange-star: #d36e52;
-      --input-border: #e2e2dd;
-      --input-bg: #ffffff;
-      --tools-bg: #f3f3f0;
-      --accent-blue: #e3effd;
-      --accent-blue-text: #4185d0;
+      --text-main: #2c2a29;
+      --text-dim: #6b6660;
+      --accent-blue: #a3c4f3;
+      --accent-purple: #c4b5fd;
+      
+      --glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --glass-shadow: rgba(31, 38, 135, 0.05);
+      
+      --pill-bg: rgba(255, 255, 255, 0.6);
+      --pill-hover: rgba(255, 255, 255, 0.9);
+      
+      --avatar-bg: rgba(255,255,255,0.6);
+      --bot-msg-bg: rgba(255, 255, 255, 0.55);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-color);
-      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      background: linear-gradient(-45deg, #fcddec, #d4e0fb, #e2f1ec, #fcf2d9);
+      background-size: 400% 400%;
+      animation: gradientBG 18s ease infinite;
+      font-family: 'Outfit', -apple-system, system-ui, sans-serif;
       color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background 0.5s ease, color 0.5s ease;
     }
 
-    /* Top Right Profile */
+    /* DARK MODE */
+    body.dark-mode {
+      --text-main: #f0f0f0;
+      --text-dim: #a0a0a0;
+      
+      --glass-bg: rgba(15, 15, 25, 0.5);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-shadow: rgba(0, 0, 0, 0.4);
+      
+      --pill-bg: rgba(30, 30, 50, 0.6);
+      --pill-hover: rgba(50, 50, 80, 0.9);
+      
+      --avatar-bg: rgba(20, 20, 35, 0.6);
+      --bot-msg-bg: rgba(25, 25, 40, 0.65);
+      
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #12102e);
+      background-size: 400% 400%;
+    }
+
+    .dark-mode .greeting-text {
+      background: linear-gradient(135deg, #d8b4fe 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .dark-mode .send-btn {
+      background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+      color: white;
+    }
+    
+    .dark-mode .message.user .msg-content {
+      background: linear-gradient(135deg, rgba(80,60,180,0.8) 0%, rgba(60,40,140,0.8) 100%);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    
+    .dark-mode .logo-bubble img, .dark-mode .bot-avatar img {
+      mix-blend-mode: normal;
+      filter: brightness(0) invert(1); /* makes the dark logo white */
+      opacity: 0.8;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Glass Panels */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px 0 var(--glass-shadow);
+      transition: all 0.2s ease-out; /* For 3D hover */
+    }
+
+    /* Top Right Profile / Theme Toggle */
     .top-right-bar {
       position: absolute;
-      top: 1rem;
-      right: 1.5rem;
+      top: 1.5rem;
+      right: 2rem;
       display: flex;
       align-items: center;
     }
 
-    .profile-btn {
-      background: none;
-      border: none;
+    .theme-btn {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
       cursor: pointer;
       color: var(--text-dim);
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      transition: background 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
-    .profile-btn:hover {
-      background: var(--pill-bg);
+    .theme-btn:hover {
+      background: var(--pill-hover);
       color: var(--text-main);
+      transform: translateY(-2px);
     }
 
     /* Main Container for rest state */
     .rest-container {
-      margin-top: 15vh;
+      margin-top: 18vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
-      max-width: 760px;
-      padding: 0 1rem;
-      transition: opacity 0.3s;
-    }
-
-    /* Pill */
-    .plan-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background-color: var(--pill-bg);
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 0.825rem;
-      color: #645f5a;
-      margin-bottom: 24px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    
-    .plan-pill:hover {
-      background-color: var(--pill-hover);
-    }
-
-    .plan-pill .upgrade {
-      font-weight: 500;
-      color: var(--text-main);
+      max-width: 800px;
+      padding: 0 1.5rem;
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
 
     /* Greeting */
     .greeting-container {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 36px;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 40px;
     }
 
-    .star-icon {
-      color: var(--orange-star);
+    .greeting-container .logo-bubble {
+      width: 80px;
+      height: 80px;
+      background: var(--avatar-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+      transition: all 0.3s ease;
     }
 
     .greeting-text {
-      font-family: 'Playfair Display', ui-serif, Georgia, serif;
-      font-size: 2.5rem;
-      font-weight: 500;
-      color: var(--text-main);
-      letter-spacing: -0.01em;
+      font-family: 'Playfair Display', ui-serif, serif;
+      font-size: 3.5rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #2b3240 0%, #687080 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .greeting-sub {
+      font-size: 1.15rem;
+      color: var(--text-dim);
+      font-weight: 300;
+      margin-top: -8px;
     }
 
     /* Prompt Input Area */
-    .prompt-box {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    .prompt-box.glass-panel {
+      padding: 8px 12px 8px 18px;
+      border-radius: 9999px;
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .input-wrapper {
-      padding: 16px 20px 12px 20px;
-      display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
+      transform-style: preserve-3d;
     }
 
     .user-input {
-      width: 100%;
+      flex: 1;
       border: none;
       outline: none;
       resize: none;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
+      font-weight: 400;
       font-family: inherit;
       color: var(--text-main);
       background: transparent;
-      min-height: 80px;
+      height: 32px;
+      line-height: 32px;
       padding: 0;
+      margin: 0 12px;
+      overflow: hidden;
     }
 
-    .user-input::placeholder {
-      color: #9d968f;
-    }
-
-    /* Controls inside prompt box */
-    .prompt-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-    }
+    .user-input::placeholder { color: #928f89; }
 
     .control-btn {
       background: none;
@@ -181,233 +227,255 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.2s;
-      border-radius: 6px;
+      transition: all 0.2s;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
     }
-
     .control-btn:hover {
       color: var(--text-main);
+      background: rgba(120,120,120,0.1);
     }
-
-    .add-btn {
-      padding: 4px;
-    }
-
-    .right-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .model-selector {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-main);
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: 6px;
-    }
-
-    .model-selector:hover {
-      background: var(--pill-hover);
-    }
-    
-    .model-selector i {
-      color: var(--text-dim);
-    }
-
-    .voice-btn {
-      padding: 4px;
-    }
-
-    /* Connect Tools Footer */
-    .tools-footer {
-      background: var(--tools-bg);
-      padding: 8px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
-      color: var(--text-main);
-      cursor: pointer;
-      border-top: 1px solid var(--input-border);
-      transition: background 0.2s;
-    }
-
-    .tools-footer:hover {
-      background: #ededec;
-    }
-
-    .tools-left {
-      display: flex;
-      align-items: center;
-    }
-
-    .tools-icons {
-      display: flex;
-      align-items: center;
-      gap: -4px;
-    }
-
-    .tool-icon {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: white;
-      border: 1px solid var(--input-border);
-      margin-left: -4px;
-      font-size: 10px;
-    }
-    .tool-icon:first-child { margin-left: 0; }
-
-    /* Bottom Left Apps */
-    .bottom-left-btn {
-      position: absolute;
-      bottom: 2rem;
-      left: 2rem;
-      background: var(--accent-blue);
-      color: var(--accent-blue-text);
-      border: none;
-      padding: 10px 18px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .bottom-left-btn:hover {
-      background: #d4e5fa;
-    }
+    .right-controls { display: flex; align-items: center; gap: 4px; }
 
     /* Send button when active */
     .send-btn {
-      display: none; /* hidden when empty */
-      background: var(--text-main);
+      display: none;
+      background: #000000;
       color: white;
       border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .dark-mode .send-btn {
+      background: #ffffff;
+      color: #000000;
     }
 
     .send-btn.visible {
       display: flex;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
+    .send-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .voice-btn.hidden { display: none; }
     
-    .voice-btn.hidden {
-      display: none;
+    @keyframes micPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
     }
 
-    /* ─── CHAT VIEW (For after sending request) ─── */
+    /* ─── CHAT VIEW ─── */
     .chat-view {
       display: none;
       width: 100%;
-      max-width: 800px;
-      padding: 2rem 1rem 8rem 1rem;
+      max-width: 840px;
+      padding: 2rem 1.5rem 10rem 1.5rem;
       flex-direction: column;
     }
+
     .message {
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       line-height: 1.6;
-      font-size: 1rem;
+      font-size: 1.05rem;
       display: flex;
+      animation: slideUp 0.4s ease-out forwards;
+      opacity: 0;
+      transform: translateY(10px);
     }
-    .message.user {
-      justify-content: flex-end;
-    }
+
+    @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
+    .message.user { justify-content: flex-end; }
+
     .message.user .msg-content {
-      background: var(--pill-bg);
-      padding: 12px 18px;
-      border-radius: 16px;
-      max-width: 80%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      padding: 14px 20px;
+      border-radius: 20px 20px 4px 20px;
+      max-width: 75%;
       color: var(--text-main);
+      box-shadow: 0 4px 15px var(--glass-shadow);
     }
+
     .message.bot .msg-content {
-      max-width: 90%;
+      background: var(--bot-msg-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      padding: 16px 22px;
+      border-radius: 20px 20px 20px 4px;
+      max-width: 85%;
       color: var(--text-main);
+      box-shadow: 0 4px 20px var(--glass-shadow);
+      position: relative;
     }
+    
+    /* Markdown Styles */
+    .msg-content p { margin-bottom: 8px; }
+    .msg-content p:last-child { margin-bottom: 0; }
+    .msg-content pre {
+      background: rgba(0,0,0,0.05);
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+    .dark-mode .msg-content pre { background: rgba(0,0,0,0.3); }
+    .msg-content code {
+      font-family: monospace;
+      background: rgba(0,0,0,0.05);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .dark-mode .msg-content code { background: rgba(0,0,0,0.3); }
+    .msg-content ul, .msg-content ol { margin-left: 20px; margin-bottom: 8px; }
+
     .bot-avatar {
-      width: 28px;
-      height: 28px;
+      width: 36px;
+      height: 36px;
       flex-shrink: 0;
-      margin-right: 12px;
+      margin-right: 14px;
       margin-top: 4px;
-      color: var(--orange-star);
+      background: var(--avatar-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+
+    /* COPY BUTTON */
+    .copy-btn {
+      opacity: 0;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 6px;
+      padding: 4px;
+      color: var(--text-dim);
+      cursor: pointer;
+      position: absolute;
+      top: 8px;
+      right: -36px;
+      transition: all 0.2s;
+    }
+    .message.bot:hover .copy-btn { opacity: 1; right: -42px; }
+    .copy-btn:hover { background: var(--pill-bg); color: var(--text-main); }
+
+    /* TYPING INDICATOR */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 4px;
+    }
+    .typing-indicator span {
+      width: 6px;
+      height: 6px;
+      background-color: var(--text-dim);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Suggestions / Pills */
+    .glass-pill {
+      background: var(--pill-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 8px 14px;
+      color: var(--text-main);
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.95rem;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    
+    .glass-pill:hover {
+      background: var(--pill-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     /* Chat Input fixed at bottom */
     .bottom-input {
       display: none;
       position: fixed;
-      bottom: 2rem;
+      bottom: 2.5rem;
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
-      max-width: 760px;
-      padding: 0 1rem;
+      max-width: 800px;
+      padding: 0 1.5rem;
+      z-index: 100;
     }
 
-    /* Utility */
-    .hidden-block { display: none !important; }
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
   </style>
 </head>
 <body>
 
   <!-- Top Right Profile -->
   <div class="top-right-bar">
-    <button class="profile-btn">
-      <i data-lucide="ghost" style="width:20px;height:20px;"></i>
+    <button class="theme-btn" id="themeToggleBtn" aria-label="Toggle Theme">
+      <i data-lucide="moon" style="width:20px;height:20px; color: #a58ae1;"></i>
     </button>
   </div>
 
   <!-- Main Resting View -->
   <div class="rest-container" id="restContainer">
     
-    <!-- Pill removed -->
-
     <div class="greeting-container">
-      <div class="star-icon">
-        <img src="/static/images/log.png" alt="Logo" width="56" height="56" style="object-fit: contain; mix-blend-mode: multiply;">
+      <div class="logo-bubble">
+        <img src="/static/images/log.png" alt="Logo" width="48" height="48" style="object-fit: contain; mix-blend-mode: multiply;">
       </div>
-      <div class="greeting-text">AuroMate</div>
+      <div style="text-align: center;">
+        <div class="greeting-text">AuroMate</div>
+        <div class="greeting-sub">Your intelligent university companion</div>
+      </div>
     </div>
 
-    <div class="prompt-box">
-      <div class="input-wrapper">
-        <textarea id="mainInput" class="user-input" placeholder="How can I help you today?" rows="1"></textarea>
-        
-        <div class="prompt-controls">
-          <!-- Plus button removed -->
-          
-          <div class="right-controls">
-            <!-- Model selector removed -->
-            <button class="control-btn voice-btn" id="voiceBtn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2v20M8 5v14M16 5v14M4 10v4M20 10v4"/>
-              </svg>
-            </button>
-            <button class="send-btn" id="sendBtn" onclick="submitQuery()">
-              <i data-lucide="arrow-up" style="width:18px;height:18px;"></i>
-            </button>
-          </div>
-        </div>
-      </div>
+    <!-- 3D Transform is applied to this prompt-box via JS -->
+    <div class="prompt-box glass-panel" id="mainPromptBox">
+      <textarea id="mainInput" class="user-input" placeholder="Ask anything" rows="1"></textarea>
       
-      <!-- Tools footer removed -->
+      <div class="right-controls" style="flex-shrink:0;">
+        <button class="control-btn voice-btn" id="voiceBtn" aria-label="Use voice">
+          <i data-lucide="mic" style="width:22px;height:22px;"></i>
+        </button>
+        <button class="send-btn" id="sendBtn" onclick="submitQuery()" aria-label="Send message">
+          <i data-lucide="arrow-up" style="width:20px;height:20px;"></i>
+        </button>
+      </div>
     </div>
   </div>
-
-  <!-- Apps Button removed -->
 
   <!-- Chat View for Interaction -->
   <div class="chat-view" id="chatView">
@@ -423,13 +491,80 @@
     // Initialize Lucide Icons
     lucide.createIcons();
 
+    // Elements
     const mainInput = document.getElementById('mainInput');
     const sendBtn = document.getElementById('sendBtn');
     const voiceBtn = document.getElementById('voiceBtn');
     const restContainer = document.getElementById('restContainer');
     const chatView = document.getElementById('chatView');
     const bottomInputContainer = document.getElementById('bottomInputContainer');
-    
+    const mainPromptBox = document.getElementById('mainPromptBox');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+    // Voice Recognition Logic
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      voiceBtn.addEventListener('click', () => {
+        voiceBtn.style.color = '#ef4444'; // Red color while listening
+        voiceBtn.innerHTML = '<i data-lucide="mic" style="width:18px;height:18px;animation: micPulse 1s infinite;"></i>';
+        lucide.createIcons();
+        recognition.start();
+      });
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        mainInput.value = transcript;
+        mainInput.dispatchEvent(new Event('input')); // Auto-resize text box and show send btn
+      };
+
+      const resetMicBtn = () => {
+        voiceBtn.style.color = 'var(--text-dim)';
+        voiceBtn.innerHTML = '<i data-lucide="mic" style="width:18px;height:18px;"></i>';
+        lucide.createIcons();
+      };
+
+      recognition.onend = resetMicBtn;
+      recognition.onerror = resetMicBtn;
+    } else {
+      voiceBtn.addEventListener('click', () => alert("Microphone is not supported in this browser."));
+    }
+
+    // Theme Toggle Logic
+    let isDarkMode = false;
+    themeToggleBtn.addEventListener('click', () => {
+      isDarkMode = !isDarkMode;
+      document.body.classList.toggle('dark-mode', isDarkMode);
+      themeToggleBtn.innerHTML = isDarkMode 
+        ? `<i data-lucide="sun" style="width:20px;height:20px; color: #facc15;"></i>`
+        : `<i data-lucide="moon" style="width:20px;height:20px; color: #a58ae1;"></i>`;
+      lucide.createIcons();
+    });
+
+    // 3D Hover Effect
+    mainPromptBox.addEventListener('mousemove', (e) => {
+      // Only do 3D hover if it's on resting mode, otherwise it might look weird fixed at the bottom
+      if(restContainer.style.display === 'none') return; 
+      
+      const rect = mainPromptBox.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -3; 
+      const rotateY = ((x - centerX) / centerX) * 3;
+      
+      mainPromptBox.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    mainPromptBox.addEventListener('mouseleave', () => {
+       mainPromptBox.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+    });
+
     // Guess module logic
     const MODULE_KEYWORDS = {
       Student:    ['student','roll','register','name','age','department','batch','year','semester','cgpa','gpa','marks','grade'],
@@ -453,7 +588,6 @@
       this.style.height = 'auto';
       this.style.height = (this.scrollHeight) + 'px';
       
-      // Toggle send/voice button
       if (this.value.trim().length > 0) {
         sendBtn.classList.add('visible');
         voiceBtn.classList.add('hidden');
@@ -476,14 +610,16 @@
 
       // Switch views on first message
       if (restContainer.style.display !== 'none') {
-        restContainer.style.display = 'none';
+        restContainer.style.opacity = '0';
+        restContainer.style.transform = 'translateY(-20px)';
+        mainPromptBox.style.transform = 'none'; // reset 3D effect
         
-        // Move the prompt box to bottom
-        const promptBox = document.querySelector('.prompt-box');
-        bottomInputContainer.appendChild(promptBox);
-        
-        chatView.style.display = 'flex';
-        bottomInputContainer.style.display = 'block';
+        setTimeout(() => {
+          restContainer.style.display = 'none';
+          bottomInputContainer.appendChild(mainPromptBox);
+          chatView.style.display = 'flex';
+          bottomInputContainer.style.display = 'block';
+        }, 300);
       }
 
       // Add user message
@@ -495,9 +631,9 @@
       sendBtn.classList.remove('visible');
       voiceBtn.classList.remove('hidden');
 
-      // Add loading state
+      // Add typing indicator
       const loadingId = 'msg-' + Date.now();
-      addMessage('...', 'bot', loadingId);
+      addMessage('', 'bot', loadingId, true);
 
       try {
         const featureGuessed = guessModule(q);
@@ -508,10 +644,10 @@
         });
         const data = await res.json();
         
-        // Update loaded message
+        // Update loaded message with MARKDOWN
         const replyEl = document.getElementById(loadingId);
         if (replyEl) {
-          replyEl.innerHTML = data.response || 'No response';
+          replyEl.innerHTML = marked.parse(data.response || 'No response');
         } else {
           addMessage(data.response, 'bot');
         }
@@ -524,16 +660,19 @@
         const replyEl = document.getElementById(loadingId);
         if (replyEl) replyEl.innerHTML = 'Sorry, there was an error connecting to the server.';
       }
+      
+      // Re-initialize any new icons
+      lucide.createIcons();
     }
 
-    function addMessage(text, role, id=null) {
+    function addMessage(text, role, id=null, isTyping=false) {
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${role}`;
       
       if (role === 'bot') {
         const avatar = document.createElement('div');
         avatar.className = 'bot-avatar';
-        avatar.innerHTML = `<img src="/static/images/log.png" alt="Logo" style="width:100%;height:100%;object-fit:contain; mix-blend-mode: multiply;">`;
+        avatar.innerHTML = `<img src="/static/images/log.png" alt="Logo" style="width:24px;height:24px;object-fit:contain; mix-blend-mode: multiply;">`;
         msgDiv.appendChild(avatar);
       }
 
@@ -541,14 +680,37 @@
       content.className = 'msg-content';
       if (id) content.id = id;
       
-      // Basic formatting handle for line breaks
-      content.innerHTML = text.replace(/\n/g, '<br>');
+      if (isTyping) {
+        content.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+      } else {
+        // Use Markdown if bot, else plain text
+        if (role === 'bot') {
+          content.innerHTML = marked.parse(text);
+          
+          // Append Copy Button for bot responses
+          const rawText = text;
+          const copyBtn = document.createElement('button');
+          copyBtn.className = 'copy-btn';
+          copyBtn.innerHTML = '<i data-lucide="copy" style="width:16px;height:16px;"></i>';
+          copyBtn.onclick = () => {
+             navigator.clipboard.writeText(rawText);
+             copyBtn.innerHTML = '<i data-lucide="check" style="width:16px;height:16px;color:#22c55e;"></i>';
+             lucide.createIcons();
+             setTimeout(() => {
+                copyBtn.innerHTML = '<i data-lucide="copy" style="width:16px;height:16px;"></i>';
+                lucide.createIcons();
+             }, 2000);
+          };
+          content.appendChild(copyBtn);
+        } else {
+          content.textContent = text;
+        }
+      }
       
       msgDiv.appendChild(content);
       chatView.appendChild(msgDiv);
       
-      // Scroll to bottom
-      window.scrollTo(0, document.body.scrollHeight);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
     function renderSuggestions(chips) {
@@ -556,38 +718,28 @@
       suggContainer.className = 'suggestion-set';
       suggContainer.style.display = 'flex';
       suggContainer.style.flexWrap = 'wrap';
-      suggContainer.style.gap = '8px';
-      suggContainer.style.marginTop = '12px';
+      suggContainer.style.gap = '10px';
+      suggContainer.style.marginTop = '16px';
       
       chips.forEach(chipText => {
         const btn = document.createElement('button');
-        btn.innerHTML = `<i data-lucide="chevron-right" style="width:12px;height:12px;margin-right:4px;"></i>${chipText}`;
-        btn.style.padding = '8px 12px';
-        btn.style.borderRadius = '16px';
-        btn.style.border = '1px solid var(--input-border)';
-        btn.style.background = 'var(--pill-bg)';
-        btn.style.color = 'var(--text-main)';
-        btn.style.cursor = 'pointer';
-        btn.style.display = 'flex';
-        btn.style.alignItems = 'center';
-        btn.style.fontSize = '0.9rem';
+        btn.className = 'glass-pill';
+        btn.innerHTML = `<i data-lucide="arrow-up-right" style="width:14px;height:14px;opacity:0.6;"></i>${chipText}`;
         btn.onclick = () => {
           mainInput.value = chipText;
           submitQuery();
-          suggContainer.remove();
+          suggContainer.style.opacity = '0';
+          setTimeout(() => suggContainer.remove(), 300);
         };
-        btn.onmouseover = () => btn.style.background = 'var(--pill-hover)';
-        btn.onmouseout = () => btn.style.background = 'var(--pill-bg)';
         suggContainer.appendChild(btn);
       });
       
-      // Append right below the last bot message content
       const botMessages = chatView.querySelectorAll('.message.bot .msg-content');
       if (botMessages.length > 0) {
         botMessages[botMessages.length - 1].appendChild(suggContainer);
       }
       lucide.createIcons();
-      window.scrollTo(0, document.body.scrollHeight);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
   </script>
