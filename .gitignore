@@ -16,3 +16,7 @@ __pycache__/
 
 # Excel temp files
 data/~$*
+
+# Runtime data
+conversations.json
+faculty.py
