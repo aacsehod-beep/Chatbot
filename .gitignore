@@ -1,0 +1,18 @@
+
+# SQLite WAL temp files
+university.db-shm
+university.db-wal
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Env
+.env
+
+# venv
+.venv/
+
+# Excel temp files
+data/~$*
