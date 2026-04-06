@@ -46,36 +46,59 @@ Database: university.db (SQLite)
 
 Tables and columns:
 
-locations
-  id, room_name, block, floor, room_number, category, directions
-  -- Stores building, room navigation, and directions.
-  -- Example: room_name='Staff Room 1', block='A-Block', floor='1st Floor', category='Staff', directions='First corridor'
-
 faculty
   id, sno, name, doj, designation, phone, cug, role, official_email, personal_email, department, office_location
   -- 40 rows. Stores faculty contact & designation info.
-  -- office_location matches room_name in locations table.
+  -- office_location: where the faculty member sits, e.g. 'Staff Room 1', 'HOD CSE Office', 'Accounts Office', 'Physics Lab'
+  -- office_location matches locations.room_name — JOIN to get block/floor/directions.
   -- Example: name='Ms. K. Jayasri', phone='9100000661', designation='Asst.Prof.,CSE,SoE', department='School of Engineering', office_location='Staff Room 1'
 
 students
   id, reg_no, name, student_phone, parent_phone, email, section
   -- 348 rows. One row per student.
-  -- section values: AIML-2A, AIML-2B, CSE-2A, etc.
-  -- reg_no pattern: like '231U1R1001'
+  -- section values: AIML-2A, AIML-2B, AIML-2C, AIML-3A, AIML-3B, CSE-2A, CSE-2B, CSE-2C, CSE-3A, CSE-3B, CSE-3C, DS-2A, DS-3A
+  -- reg_no pattern: like '231U1R1001', '241U1R2061'
+  -- Example: reg_no='231U1R2001', name='Patabandula Ramesh', section='AIML-3A'
 
 timetable
   id, section, day, hour, subject, teacher, room, class_incharge
   -- 596 rows. One row per section/day/hour slot.
   -- hour values: H1, H2, H3, H4, H5, H6, H7, H8
-  -- room column matches room_name in locations table.
-  -- Example: section='CSE-3A', subject='Software Engineering(T)', teacher='Dr.B.Pannalal', room='Room 204'
+  -- day values: Monday, Tuesday, Wednesday, Thursday, Friday (may have trailing space — use LIKE or TRIM)
+  -- room: classroom where the class is held, e.g. 'Room 101', 'Room 204', 'Chemistry Lab', 'Computer Lab 1'. May be NULL.
+  -- room matches locations.room_name — JOIN to get block/floor/directions.
+  -- subject and teacher are text strings.
+  -- class_incharge is from row 9 of the timetable sheet.
+  -- Example: section='CSE-3A', day='Monday', hour='H1', subject='Software Engineering(T)-Dr.B.Pannalal', room='Room 101'
 
 workload
   id, faculty, day, hour, subject_section
   -- 496 rows. One row per faculty/day/hour.
+  -- faculty name = full name like 'Ms.Swathi', 'Dr.Mahesh prabhu', 'Mr.Ravikanth'
+  -- subject_section contains subject name and class section e.g. 'Computer Networks CSE III-A'
+  -- Use LIKE '%name%' to search faculty by partial name.
+  -- Example: faculty='Ms.Swathi', day='Monday', hour='H3', subject_section='Computer Networks CSE III-A'
 
 attendance
   id, week, section, reg_no, name, subject, held, attended, percentage
+  -- 4230 rows. One row per student per subject per week.
+  -- week values: 'week1', 'week2'
+  -- percentage is integer (0-100). Defaulters: percentage < 75
+  -- Example: week='week1', section='CSE-2A', name='Yadagiri Kushal Goud', subject='Python Programming', percentage=48
+
+locations
+  id, room_name, block, floor, room_number, category, directions
+  -- 10 rows. Physical location of every room/office/lab in the college.
+  -- room_name: 'Staff Room 1', 'HOD CSE Office', 'Accounts Office', 'Room 101', 'Room 204', 'Chemistry Lab', 'Computer Lab 1', 'Physics Lab', 'Library', 'Canteen'
+  -- block: e.g. 'Main Building', 'Admin Block', 'Science Wing', 'Campus Center'
+  -- floor: e.g. 'Ground Floor', '1st Floor', '2nd Floor'
+  -- room_number: short code like 'A-05', 'S-201' (may be NULL)
+  -- category: 'Classroom', 'Staff', 'Administration', 'Laboratory', 'Academic', 'Facility'
+  -- directions: human-readable navigation hint, e.g. 'Take the stairs near the main entrance.'
+  -- JOIN with faculty ON faculty.office_location = locations.room_name to get where a faculty member sits.
+  -- JOIN with timetable ON timetable.room = locations.room_name to get where a class is held.
+  -- Use this table for queries like: where is [room/office/lab], how to reach [place], location of [person's office].
+  -- Example: room_name='Staff Room 1', block='Main Building', floor='2nd Floor', category='Staff', directions='Second floor, left wing.'
 """
 
 # ─────────────────────────────────────────────
@@ -199,8 +222,7 @@ RULES:
 7. Return NULL if the question cannot be answered from this database.
 8. For timetable day filtering, use LIKE '%Monday%' to handle trailing spaces.
 9. When user asks about a specific student by name, use LIKE on the name column.
-10. To find a faculty's office location details, JOIN faculty and locations: SELECT f.name, l.* FROM faculty f JOIN locations l ON f.office_location = l.room_name WHERE f.name LIKE '%Smith%'
-11. To find a class room location for a section/timetable, JOIN timetable and locations: SELECT t.*, l.block, l.floor, l.directions FROM timetable t JOIN locations l ON t.room = l.room_name
+10. For free faculty: SELECT DISTINCT faculty FROM workload WHERE day LIKE '%Monday%' and hour NOT IN (SELECT hour FROM workload WHERE faculty LIKE '%name%' AND day LIKE '%Monday%')
 
 Recent conversation:
 {recent_context or "None"}
@@ -258,9 +280,7 @@ Instructions:
 Recent conversation:
 {recent_context or "None"}
 
-After your answer, on a new line write exactly:
-SUGGESTIONS: <follow-up question 1> | <follow-up question 2> | <follow-up question 3>
-(Each suggestion max 7 words. Make them relevant to what was just discussed.)"""
+"""
 
     try:
         result = gemini_client.models.generate_content(
@@ -268,13 +288,9 @@ SUGGESTIONS: <follow-up question 1> | <follow-up question 2> | <follow-up questi
             contents=prompt,
         )
         text = (result.text or "").strip()
-        suggestions = []
         if "SUGGESTIONS:" in text:
-            main_text, raw_sugg = text.split("SUGGESTIONS:", 1)
-            suggestions = [s.strip() for s in raw_sugg.split("|") if s.strip()][:3]
-        else:
-            main_text = text
-        return main_text.strip(), suggestions
+            text = text.split("SUGGESTIONS:", 1)[0]
+        return text.strip(), []
     except Exception:
         return None, []
 
@@ -285,28 +301,21 @@ def handle_conversational(user_input, recent_context=""):
         return (
             "Hello! I'm AuroMate, your university assistant. "
             "Ask me about students, faculty, attendance, timetables, or workload.",
-            ["Show attendance for CSE-2A", "What is Dr. Swathi's schedule?", "List AIML-3A students"]
+            []
         )
     prompt = (
         "You are AuroMate, a friendly AI academic assistant for Aurora University.\n"
         "You help with student info, faculty contacts, attendance, timetables and faculty workload.\n"
         f"Recent chat:\n{recent_context or 'None'}\n\n"
         f"User said: \"{user_input}\"\n"
-        "Reply naturally and warmly in 1-2 sentences.\n"
-        "Then on a new line write:\n"
-        "SUGGESTIONS: <question1> | <question2> | <question3>\n"
-        "Suggest 3 relevant things the user can ask AuroMate (max 7 words each)."
+        "Reply naturally and warmly in 1-2 sentences."
     )
     try:
         result = gemini_client.models.generate_content(model=GEMINI_MODEL_NAME, contents=prompt)
         text = (result.text or "").strip()
-        suggestions = []
         if "SUGGESTIONS:" in text:
-            main_text, raw_sugg = text.split("SUGGESTIONS:", 1)
-            suggestions = [s.strip() for s in raw_sugg.split("|") if s.strip()][:3]
-        else:
-            main_text = text
-        return main_text.strip(), suggestions
+            text = text.split("SUGGESTIONS:", 1)[0]
+        return text.strip(), []
     except Exception:
         return "Hello! I'm AuroMate. How can I help you today?", []
 
@@ -351,11 +360,60 @@ def _detect_feature_from_sql(sql):
         return "Workload"
     if "timetable" in sql_lower:
         return "Timetable"
+    if "locations" in sql_lower or "office_location" in sql_lower:
+        return "Location"
     if "faculty" in sql_lower:
         return "Faculty"
     if "student" in sql_lower:
         return "Student"
     return "General"
+
+
+DAYS_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+HOURS_ORDER = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'H8']
+
+
+def build_timetable_grid(rows):
+    """
+    Convert timetable query rows into a day × hour grid dict for the frontend.
+    Returns None if rows don't look like timetable data.
+    """
+    if not rows or 'day' not in rows[0] or 'hour' not in rows[0]:
+        return None
+
+    sections = list(dict.fromkeys(
+        str(r.get('section', '')).strip() for r in rows if r.get('section')
+    ))
+
+    grid = {}
+    for row in rows:
+        day = str(row.get('day', '')).strip()
+        hour = str(row.get('hour', '')).strip()
+        subject = str(row.get('subject', '') or '').strip()
+        teacher = str(row.get('teacher', '') or '').strip()
+        if not day or not hour:
+            continue
+        if day not in grid:
+            grid[day] = {}
+        cell = subject
+        if teacher and teacher.lower() not in ('none', ''):
+            cell = f"{subject} ({teacher})"
+        grid[day][hour] = cell
+
+    if not grid:
+        return None
+
+    present_days = [d for d in DAYS_ORDER if d in grid]
+    # Also catch days with trailing spaces
+    if not present_days:
+        present_days = sorted(grid.keys())
+
+    return {
+        'sections': sections,
+        'grid': grid,
+        'days': present_days,
+        'hours': HOURS_ORDER,
+    }
 
 
 # ─────────────────────────────────────────────
@@ -369,14 +427,14 @@ def process_query(user_input, feature=None, conv_id=None):
       3. SQL runs on SQLite
       4. Gemini formats results conversationally
       5. Fallback: raw data if Gemini formatting fails
-    Returns (response_html, ai_used, detected_feature, suggestions)
+    Returns (response_html, ai_used, detected_feature, suggestions, timetable_grid)
     """
     recent_context = get_recent_context(conv_id)
 
     # Step 1: conversational
     if _is_conversational(user_input):
         text, suggestions = handle_conversational(user_input, recent_context)
-        return text.replace("\n", "<br>"), True, "General", suggestions
+        return text.replace("\n", "<br>"), True, "General", suggestions, None
 
     # Step 2: generate SQL
     sql = generate_sql(user_input, recent_context)
@@ -386,7 +444,7 @@ def process_query(user_input, feature=None, conv_id=None):
             "You can ask me about: student contacts, faculty info, class timetables, "
             "faculty workload, or student attendance."
         )
-        return fallback, False, "General", []
+        return fallback, False, "General", [], None
 
     # Step 3: run SQL
     try:
@@ -398,22 +456,29 @@ def process_query(user_input, feature=None, conv_id=None):
                 columns, rows = run_sql(corrected_sql)
                 sql = corrected_sql
             except Exception:
-                return "I had trouble querying the database. Could you rephrase your question?", False, "General", []
+                return "I had trouble querying the database. Could you rephrase your question?", False, "General", [], None
         else:
-            return "I had trouble querying the database. Could you rephrase your question?", False, "General", []
+            return "I had trouble querying the database. Could you rephrase your question?", False, "General", [], None
 
     detected_feature = _detect_feature_from_sql(sql)
+
+    # Build timetable grid if applicable
+    timetable_grid = build_timetable_grid(rows) if detected_feature == "Timetable" else None
 
     # Step 4: format with Gemini
     response_text, suggestions = format_with_gemini(user_input, sql, columns, rows, recent_context)
     if response_text:
-        return response_text.replace("\n", "<br>"), True, detected_feature, suggestions
+        # If we have a grid, keep the Gemini response brief (just the intro line)
+        if timetable_grid:
+            lines = response_text.strip().split('\n')
+            response_text = lines[0] if lines else response_text
+        return response_text.replace("\n", "<br>"), True, detected_feature, suggestions, timetable_grid
 
     # Step 5: raw fallback
     raw_text = format_rows_as_text(columns, rows)
     if not raw_text or raw_text == "No records found.":
-        return "No matching records found in the database.", False, detected_feature, []
-    return raw_text.replace("\n", "<br>"), False, detected_feature, []
+        return "No matching records found in the database.", False, detected_feature, [], None
+    return raw_text.replace("\n", "<br>"), False, detected_feature, [], timetable_grid
 
 # ─────────────────────────────────────────────
 # Routes
@@ -433,17 +498,20 @@ def ask():
     feature = data.get("feature", None)
     conv_id = data.get("convId", None)
 
-    response, ai_used, detected_feature, suggestions = process_query(user_input, feature, conv_id)
+    response, ai_used, detected_feature, suggestions, timetable_grid = process_query(user_input, feature, conv_id)
 
     if conv_id:
         save_conversation(conv_id, user_input, response, detected_feature)
 
-    return jsonify({
+    resp = {
         "response": response,
         "ai_used": ai_used,
         "detected_feature": detected_feature,
         "suggestions": suggestions
-    })
+    }
+    if timetable_grid:
+        resp["timetable_grid"] = timetable_grid
+    return jsonify(resp)
 
 
 @app.route("/ai-status", methods=["GET"])

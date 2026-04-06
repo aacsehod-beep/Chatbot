@@ -86,8 +86,13 @@
     
     .dark-mode .logo-bubble img, .dark-mode .bot-avatar img {
       mix-blend-mode: normal;
-      filter: brightness(0) invert(1); /* makes the dark logo white */
-      opacity: 0.8;
+      filter: none;
+      opacity: 1;
+    }
+    /* White backing so logo (with white bg) stays visible on dark mode */
+    .dark-mode .logo-bubble,
+    .dark-mode .bot-avatar {
+      background: #ffffff !important;
     }
 
     @keyframes gradientBG {
@@ -159,6 +164,33 @@
       margin-bottom: 40px;
     }
 
+    /* ─── A: Staggered Cascade ─────────────────── */
+    @keyframes landCascade {
+      0%   { opacity: 0; transform: translateY(22px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes landDropIn {
+      0%   { opacity: 0; transform: translateY(-28px) scale(0.85); }
+      70%  { transform: translateY(4px) scale(1.04); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .greeting-text {
+      font-family: 'Playfair Display', ui-serif, serif;
+      font-size: 3.5rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #2b3240 0%, #687080 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+      animation: landCascade 0.55s ease 0.45s both;
+    }
+
+    /* ─── B: Logo Glow Breathe ──────────────────── */
+    @keyframes logoGlow {
+      0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 0 0px 0px rgba(108,99,255,0); }
+      50%       { box-shadow: 0 8px 36px rgba(108,99,255,0.22), 0 0 28px 8px rgba(108,99,255,0.15); }
+    }
+
     .greeting-container .logo-bubble {
       width: 80px;
       height: 80px;
@@ -169,25 +201,25 @@
       justify-content: center;
       backdrop-filter: blur(12px);
       border: 1px solid var(--glass-border);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
       transition: all 0.3s ease;
+      animation: landDropIn 0.65s cubic-bezier(0.175,0.885,0.32,1.275) 0.15s both,
+                 logoGlow 3s ease-in-out 1.2s infinite,
+                 floatInput 1.8s ease-in-out 1s infinite;
     }
 
-    .greeting-text {
-      font-family: 'Playfair Display', ui-serif, serif;
-      font-size: 3.5rem;
-      font-weight: 600;
-      background: linear-gradient(135deg, #2b3240 0%, #687080 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
+    /* ─── C: Floating Input Box ─────────────────── */
+    @keyframes floatInput {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-6px); }
     }
-
-    .greeting-sub {
-      font-size: 1.15rem;
-      color: var(--text-dim);
-      font-weight: 300;
-      margin-top: -8px;
+    /* Wrapper floats; inside box keeps its 3D transforms untouched */
+    .prompt-float-wrap {
+      width: 100%;
+      animation: landCascade 0.55s ease 0.85s both,
+                 floatInput 4s ease-in-out 1.8s infinite;
+    }
+    .prompt-float-wrap.no-float {
+      animation: none;
     }
 
     /* Prompt Input Area */
@@ -274,6 +306,52 @@
       0% { transform: scale(1); }
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
+    }
+
+    /* ─── VOICE WAVE OVERLAY ─── */
+    .voice-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: rgba(108,99,255,0.06);
+      pointer-events: none;
+      z-index: 10;
+    }
+    .voice-overlay.active { display: flex; }
+    .voice-wave-bar {
+      width: 4px;
+      border-radius: 4px;
+      background: var(--accent);
+      animation: waveBar 0.9s ease-in-out infinite;
+    }
+    .voice-wave-bar:nth-child(1) { height: 12px; animation-delay: 0s; }
+    .voice-wave-bar:nth-child(2) { height: 22px; animation-delay: 0.1s; }
+    .voice-wave-bar:nth-child(3) { height: 32px; animation-delay: 0.2s; }
+    .voice-wave-bar:nth-child(4) { height: 22px; animation-delay: 0.3s; }
+    .voice-wave-bar:nth-child(5) { height: 12px; animation-delay: 0.4s; }
+    .voice-listening-label {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    @keyframes waveBar {
+      0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+      50%       { transform: scaleY(1.3); opacity: 1; }
+    }
+    .voice-btn.listening {
+      color: #ef4444 !important;
+      animation: micPulse 1s infinite;
     }
 
     /* ─── CHAT VIEW ─── */
@@ -420,6 +498,54 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
+    /* ── Timetable Grid ─────────────────────────── */
+    .tt-wrapper {
+      overflow-x: auto;
+      margin-top: 10px;
+      border-radius: 10px;
+    }
+    .tt-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.78rem;
+      min-width: 560px;
+    }
+    .tt-table th {
+      background: var(--accent, #6c63ff);
+      color: #fff;
+      padding: 7px 10px;
+      text-align: center;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .tt-table td {
+      border: 1px solid var(--glass-border, #e0e0e0);
+      padding: 6px 8px;
+      text-align: center;
+      vertical-align: middle;
+      min-width: 80px;
+      line-height: 1.3;
+      color: var(--text-main);
+    }
+    .tt-table tr:nth-child(even) td { background: rgba(108,99,255,0.04); }
+    .tt-table td.tt-day {
+      font-weight: 600;
+      white-space: nowrap;
+      background: rgba(108,99,255,0.08);
+      color: var(--accent, #6c63ff);
+    }
+    .tt-table td.tt-empty { color: #aaa; font-style: italic; font-size: 0.72rem; }
+    .tt-table td.tt-break { background: rgba(255,200,0,0.12); color: #997700; font-size: 0.72rem; }
+    .dark-mode .tt-table td { border-color: rgba(255,255,255,0.1); }
+    .dark-mode .tt-table tr:nth-child(even) td { background: rgba(108,99,255,0.08); }
+    .tt-section-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--accent, #6c63ff);
+      opacity: 0.85;
+    }
+
     /* Chat Input fixed at bottom */
     .bottom-input {
       display: none;
@@ -438,9 +564,126 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+    /* ─── SPLASH SCREEN ─── */
+    #splashScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(-45deg, #fcddec, #d4e0fb, #e2f1ec, #fcf2d9);
+      background-size: 400% 400%;
+      animation: gradientBG 8s ease infinite;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #splashScreen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .splash-ring-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 130px;
+      height: 130px;
+      margin-bottom: 28px;
+    }
+    .splash-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2.5px solid rgba(108,99,255,0.55);
+      animation: ringPulse 1.4s ease-out infinite;
+    }
+    .splash-ring:nth-child(2) { animation-delay: 0.7s; }
+    @keyframes ringPulse {
+      0%   { transform: scale(0.85); opacity: 0.9; }
+      100% { transform: scale(1.55); opacity: 0; }
+    }
+    .splash-logo-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(255,255,255,0.9);
+      box-shadow: 0 8px 32px rgba(108,99,255,0.18), 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: splashLogoIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both;
+      position: relative;
+      z-index: 1;
+    }
+    @keyframes splashLogoIn {
+      0%   { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+    .splash-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #5b4fcf 0%, #9b87e8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.06em;
+      animation: splashFadeUp 0.5s 0.5s ease both;
+    }
+    .splash-tagline {
+      font-size: 0.95rem;
+      color: #7c7490;
+      font-weight: 300;
+      margin-top: 6px;
+      letter-spacing: 0.05em;
+      animation: splashFadeUp 0.5s 0.75s ease both;
+    }
+    .splash-dots {
+      display: flex;
+      gap: 7px;
+      margin-top: 32px;
+      animation: splashFadeUp 0.4s 1s ease both;
+    }
+    .splash-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(108,99,255,0.45);
+      animation: splashDot 1.1s 1s ease-in-out infinite both;
+    }
+    .splash-dots span:nth-child(2) { animation-delay: 1.18s; }
+    .splash-dots span:nth-child(3) { animation-delay: 1.36s; }
+    @keyframes splashDot {
+      0%, 100% { transform: translateY(0);   opacity: 0.4; }
+      50%       { transform: translateY(-6px); opacity: 1; }
+    }
+    @keyframes splashFadeUp {
+      0%   { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
+
+  <!-- ─── SPLASH SCREEN ─── -->
+  <div id="splashScreen">
+    <div class="splash-ring-wrap">
+      <div class="splash-ring"></div>
+      <div class="splash-ring"></div>
+      <div class="splash-logo-circle">
+        <img src="/static/images/log.png" alt="AuroMate" width="56" height="56" style="object-fit:contain;">
+      </div>
+    </div>
+    <div class="splash-name">AuroMate</div>
+    <div class="splash-tagline">Your intelligent university companion</div>
+    <div class="splash-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
 
   <!-- Top Right Profile -->
   <div class="top-right-bar">
@@ -454,16 +697,25 @@
     
     <div class="greeting-container">
       <div class="logo-bubble">
-        <img src="/static/images/log.png" alt="Logo" width="48" height="48" style="object-fit: contain; mix-blend-mode: multiply;">
+        <img src="/static/images/log.png" alt="Logo" width="48" height="48" style="object-fit: contain;">
       </div>
       <div style="text-align: center;">
         <div class="greeting-text">AuroMate</div>
-        <div class="greeting-sub">Your intelligent university companion</div>
       </div>
     </div>
 
     <!-- 3D Transform is applied to this prompt-box via JS -->
-    <div class="prompt-box glass-panel" id="mainPromptBox">
+    <div class="prompt-float-wrap" id="promptFloatWrap">
+    <div class="prompt-box glass-panel" id="mainPromptBox" style="position:relative;">
+      <!-- Voice listening overlay -->
+      <div class="voice-overlay" id="voiceOverlay">
+        <div class="voice-wave-bar"></div>
+        <div class="voice-wave-bar"></div>
+        <div class="voice-wave-bar"></div>
+        <div class="voice-wave-bar"></div>
+        <div class="voice-wave-bar"></div>
+        <span class="voice-listening-label">Listening...</span>
+      </div>
       <textarea id="mainInput" class="user-input" placeholder="Ask anything" rows="1"></textarea>
       
       <div class="right-controls" style="flex-shrink:0;">
@@ -474,6 +726,7 @@
           <i data-lucide="arrow-up" style="width:20px;height:20px;"></i>
         </button>
       </div>
+    </div>
     </div>
   </div>
 
@@ -509,27 +762,36 @@
       recognition.interimResults = false;
       recognition.lang = 'en-US';
 
-      voiceBtn.addEventListener('click', () => {
-        voiceBtn.style.color = '#ef4444'; // Red color while listening
-        voiceBtn.innerHTML = '<i data-lucide="mic" style="width:18px;height:18px;animation: micPulse 1s infinite;"></i>';
-        lucide.createIcons();
+      const voiceOverlay = document.getElementById('voiceOverlay');
+
+      const startListening = () => {
+        voiceBtn.classList.add('listening');
+        voiceOverlay.classList.add('active');
         recognition.start();
+      };
+
+      const stopListening = () => {
+        voiceBtn.classList.remove('listening');
+        voiceOverlay.classList.remove('active');
+      };
+
+      voiceBtn.addEventListener('click', () => {
+        if (voiceBtn.classList.contains('listening')) {
+          recognition.stop();
+          stopListening();
+        } else {
+          startListening();
+        }
       });
 
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         mainInput.value = transcript;
-        mainInput.dispatchEvent(new Event('input')); // Auto-resize text box and show send btn
+        mainInput.dispatchEvent(new Event('input'));
       };
 
-      const resetMicBtn = () => {
-        voiceBtn.style.color = 'var(--text-dim)';
-        voiceBtn.innerHTML = '<i data-lucide="mic" style="width:18px;height:18px;"></i>';
-        lucide.createIcons();
-      };
-
-      recognition.onend = resetMicBtn;
-      recognition.onerror = resetMicBtn;
+      recognition.onend = stopListening;
+      recognition.onerror = stopListening;
     } else {
       voiceBtn.addEventListener('click', () => alert("Microphone is not supported in this browser."));
     }
@@ -616,6 +878,8 @@
         
         setTimeout(() => {
           restContainer.style.display = 'none';
+          mainPromptBox.style.animation = 'none'; // stop float when in chat mode
+          document.getElementById('promptFloatWrap').classList.add('no-float');
           bottomInputContainer.appendChild(mainPromptBox);
           chatView.style.display = 'flex';
           bottomInputContainer.style.display = 'block';
@@ -644,18 +908,19 @@
         });
         const data = await res.json();
         
-        // Update loaded message with MARKDOWN
+        // Update loaded message with MARKDOWN or timetable grid
         const replyEl = document.getElementById(loadingId);
         if (replyEl) {
-          replyEl.innerHTML = marked.parse(data.response || 'No response');
+          if (data.timetable_grid) {
+            replyEl.innerHTML = marked.parse(data.response || '');
+            replyEl.appendChild(buildTimetableGrid(data.timetable_grid));
+          } else {
+            replyEl.innerHTML = marked.parse(data.response || 'No response');
+          }
         } else {
           addMessage(data.response, 'bot');
         }
 
-        // Render suggestions if available
-        if (data.suggestions && data.suggestions.length > 0) {
-          renderSuggestions(data.suggestions);
-        }
       } catch(err) {
         const replyEl = document.getElementById(loadingId);
         if (replyEl) replyEl.innerHTML = 'Sorry, there was an error connecting to the server.';
@@ -672,7 +937,7 @@
       if (role === 'bot') {
         const avatar = document.createElement('div');
         avatar.className = 'bot-avatar';
-        avatar.innerHTML = `<img src="/static/images/log.png" alt="Logo" style="width:24px;height:24px;object-fit:contain; mix-blend-mode: multiply;">`;
+        avatar.innerHTML = `<img src="/static/images/log.png" alt="Logo" style="width:24px;height:24px;object-fit:contain;">`;
         msgDiv.appendChild(avatar);
       }
 
@@ -741,6 +1006,79 @@
       lucide.createIcons();
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
+
+    function buildTimetableGrid(gridData) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'tt-wrapper';
+
+      // Section label
+      if (gridData.sections && gridData.sections.length > 0) {
+        const label = document.createElement('div');
+        label.className = 'tt-section-label';
+        label.textContent = gridData.sections.join(', ');
+        wrapper.appendChild(label);
+      }
+
+      const table = document.createElement('table');
+      table.className = 'tt-table';
+
+      // Header row: Day | H1 | H2 ... H8
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      const thDay = document.createElement('th');
+      thDay.textContent = 'Day';
+      headerRow.appendChild(thDay);
+      gridData.hours.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      // Body rows: one per day
+      const tbody = document.createElement('tbody');
+      gridData.days.forEach(day => {
+        const tr = document.createElement('tr');
+        const tdDay = document.createElement('td');
+        tdDay.className = 'tt-day';
+        tdDay.textContent = day;
+        tr.appendChild(tdDay);
+
+        gridData.hours.forEach(h => {
+          const td = document.createElement('td');
+          const cell = (gridData.grid[day] || {})[h];
+          if (!cell || cell.trim() === '') {
+            td.className = 'tt-empty';
+            td.textContent = '—';
+          } else if (cell.toUpperCase().includes('LUNCH')) {
+            td.className = 'tt-break';
+            td.textContent = 'Lunch';
+          } else {
+            // Shorten long text: split on common delimiters, show subject only
+            let display = cell.replace(/\s*\(T\)\s*/gi, ' ').replace(/\s*\(SL\)\s*/gi, ' ').replace(/\s*\(Lab\)\s*/gi, ' ').trim();
+            if (display.length > 40) display = display.substring(0, 38) + '…';
+            td.title = cell; // full text on hover
+            td.textContent = display;
+          }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      wrapper.appendChild(table);
+      return wrapper;
+    }
+
+    // ─── SPLASH SCREEN ───
+    (function() {
+      const splash = document.getElementById('splashScreen');
+      // Dismiss after 2.3s — enough for rings + dots to play once
+      setTimeout(() => {
+        splash.classList.add('fade-out');
+        setTimeout(() => splash.remove(), 500);
+      }, 2300);
+    })();
 
   </script>
 </body>
