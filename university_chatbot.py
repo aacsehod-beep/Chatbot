@@ -12,7 +12,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
-from google import genai
+from openai import OpenAI
 
 app = Flask(__name__)
 
@@ -34,7 +34,10 @@ GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 gemini_client = None
 if GEMINI_API_KEY:
     try:
-        gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+        gemini_client = OpenAI(
+            api_key=GEMINI_API_KEY,
+            base_url="https://openrouter.ai/api/v1",
+        )
     except Exception:
         gemini_client = None
 
@@ -231,22 +234,29 @@ User question: {user_input}
 
 SQL:"""
 
-    try:
-        result = gemini_client.models.generate_content(
-            model=GEMINI_MODEL_NAME,
-            contents=prompt,
-        )
-        sql = (result.text or "").strip()
-        if sql.startswith("```"):
-            sql = sql.split("```")[1]
-            if sql.lower().startswith("sql"):
-                sql = sql[3:]
-        sql = sql.strip().rstrip(";")
-        if sql.upper() == "NULL" or not sql:
-            return None
-        return sql
-    except Exception:
-        return None
+    import time
+    for attempt in range(3):
+        try:
+            result = gemini_client.chat.completions.create(
+                model=GEMINI_MODEL_NAME,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=512,
+            )
+            sql = (result.choices[0].message.content or "").strip()
+            if sql.startswith("```"):
+                sql = sql.split("```")[1]
+                if sql.lower().startswith("sql"):
+                    sql = sql[3:]
+            sql = sql.strip().rstrip(";")
+            if sql.upper() == "NULL" or not sql:
+                return None
+            return sql
+        except Exception as e:
+            print(f"[generate_sql ERROR attempt {attempt+1}] {type(e).__name__}: {e}")
+            if attempt < 2:
+                time.sleep(3)
+            else:
+                return None
 
 
 def format_with_gemini(user_input, sql, columns, rows, recent_context=""):
@@ -282,17 +292,23 @@ Recent conversation:
 
 """
 
-    try:
-        result = gemini_client.models.generate_content(
-            model=GEMINI_MODEL_NAME,
-            contents=prompt,
-        )
-        text = (result.text or "").strip()
-        if "SUGGESTIONS:" in text:
-            text = text.split("SUGGESTIONS:", 1)[0]
-        return text.strip(), []
-    except Exception:
-        return None, []
+    import time
+    for attempt in range(3):
+        try:
+            result = gemini_client.chat.completions.create(
+                model=GEMINI_MODEL_NAME,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1024,
+            )
+            text = (result.choices[0].message.content or "").strip()
+            if "SUGGESTIONS:" in text:
+                text = text.split("SUGGESTIONS:", 1)[0]
+            return text.strip(), []
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(2)
+            else:
+                return None, []
 
 
 def handle_conversational(user_input, recent_context=""):
@@ -311,8 +327,12 @@ def handle_conversational(user_input, recent_context=""):
         "Reply naturally and warmly in 1-2 sentences."
     )
     try:
-        result = gemini_client.models.generate_content(model=GEMINI_MODEL_NAME, contents=prompt)
-        text = (result.text or "").strip()
+        result = gemini_client.chat.completions.create(
+            model=GEMINI_MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=256,
+        )
+        text = (result.choices[0].message.content or "").strip()
         if "SUGGESTIONS:" in text:
             text = text.split("SUGGESTIONS:", 1)[0]
         return text.strip(), []
@@ -338,8 +358,12 @@ Original user question: {user_input}
 
 Fixed SQL:"""
     try:
-        result = gemini_client.models.generate_content(model=GEMINI_MODEL_NAME, contents=prompt)
-        fixed = (result.text or "").strip().rstrip(";")
+        result = gemini_client.chat.completions.create(
+            model=GEMINI_MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=512,
+        )
+        fixed = (result.choices[0].message.content or "").strip().rstrip(";")
         if fixed.upper() == "NULL" or not fixed:
             return None
         if fixed.startswith("```"):
@@ -464,6 +488,9 @@ def process_query(user_input, feature=None, conv_id=None):
 
     # Build timetable grid if applicable
     timetable_grid = build_timetable_grid(rows) if detected_feature == "Timetable" else None
+
+    # Small delay to avoid hitting per-minute rate limits (2 Gemini calls per query)
+    import time; time.sleep(1)
 
     # Step 4: format with Gemini
     response_text, suggestions = format_with_gemini(user_input, sql, columns, rows, recent_context)
