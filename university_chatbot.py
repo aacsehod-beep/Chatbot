@@ -16,7 +16,7 @@ from openai import OpenAI
 
 app = Flask(__name__)
 
-load_dotenv()
+load_dotenv(override=True)
 
 # ─────────────────────────────────────────────
 # DB + Conversation setup
